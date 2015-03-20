@@ -3,7 +3,7 @@ A Polyglot (any language) HTML Imports-based Module System for Web Components th
 
 ## Alloy's Five Principles
 * Simple
-* Instant (really, really fast).
+* Instant (really, really fast)
 * Polyglot (any language)
 * Optimized for Web Component projects
 * Free and Open Source (MIT License)
