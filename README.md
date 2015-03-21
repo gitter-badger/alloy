@@ -9,7 +9,7 @@ A Polyglot (any language) HTML Imports-based Module System for Web Components th
 * Free and Open Source (MIT License)
 
 ## How does Alloy compare with other Build Systems?
-- Gulp, Brunch, Grunt, and other build systems are too slow, difficult to setup, and genereally not optimizable for Web Component projects.
+- Gulp, Brunch, Grunt, and other build systems are too slow, difficult to setup, and generally not optimizable for Web Component projects.
 - Vulcanize (polymer) is too slow, requires the use of html import syntax (combining HTML with script), and doesn't work with other compiled languages (TypeScript, ES6, Coffeescript, etc).
 
 ## Design Documentation
