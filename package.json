@@ -1,0 +1,19 @@
+{
+  "name": "alloy",
+  "version": "0.0.1",
+  "description": "A Polyglot (any language) HTML Imports-based Module System for Web Components ",
+  "main": "alloy.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/makenotion/alloy.git"
+  },
+  "author": "Notion Labs, Inc.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/makenotion/alloy/issues"
+  },
+  "homepage": "https://github.com/makenotion/alloy"
+}
