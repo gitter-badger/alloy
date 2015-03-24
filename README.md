@@ -5,7 +5,7 @@ A Polyglot (any language) HTML Imports-based Module System for Web Components th
 * Simple
 * Instant (really, really fast)
 * Polyglot (any language)
-* Optimized for Web Component projects
+* Optimized for massive Web Component projects
 * Free and Open Source (MIT License)
 
 ## How does Alloy compare with other Build Systems?
@@ -16,7 +16,18 @@ A Polyglot (any language) HTML Imports-based Module System for Web Components th
 [Alloy Design Document](https://www.makenotion.com/ElV9Qe54jjs81)
 
 ## Setup & API
-Coming soon.
+
+#### Building Alloy
+Alloy is a tiny application written in ES6, it only requires a simple transpile and concatenation by [Babel](https://github.com/babel/babel) to build.
+
+- Just build:
+``$ babel ./source/ --out-file ./build/alloy.js --source-maps``
+
+- Watch and build:
+``$ babel ./source/ --watch --out-file ./build/alloy.js --source-maps``
+
+#### API
+[Alloy API Design Document](https://www.makenotion.com/IuozGZXxcVGZG)
 
 ## Contributing
 - *Community*: Submit a pull request and we will follow up with a contributor agreement when the PR is accepted.
