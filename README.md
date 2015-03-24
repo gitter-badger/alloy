@@ -20,6 +20,9 @@ A Polyglot (any language) HTML Imports-based Module System for Web Components th
 #### Building Alloy
 Alloy is a tiny application written in ES6, it only requires a simple transpile and concatenation by [Babel](https://github.com/babel/babel) to build.
 
+- Install babel globally:
+``$ npm install babel -g``
+
 - Just build:
 ``$ babel ./source/ --out-file ./build/alloy.js --source-maps``
 
