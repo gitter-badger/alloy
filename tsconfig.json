@@ -1,13 +1,17 @@
 {
     "compilerOptions": {
-        "module" : "commonjs",
-        "target" : "ES5",
-        "outDir" : "./build/"
+        "module": "commonjs",
+        "target": "es5",
+        "outDir": "./build/"
     },
     "filesGlob": [
-        "./source/*.ts",
-        "./source/**/.ts",
-        "./typings/*.ts",
-        "./typings/**/.ts"
+        "./**/*.ts",
+        "!./node_modules/**/.ts"
+    ],
+    "files": [
+        "./source/alloy.ts",
+        "./source/parser/tokens.ts",
+        "./typings/node/node.d.ts",
+        "./typings/tsd.d.ts"
     ]
 }
