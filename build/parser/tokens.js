@@ -30,10 +30,10 @@ ES6 RC3 Module System Examples:
 */
 var Tokens = [
     {
-        ignore_tokens: [" "]
+        ignore_tokens: [
+            " "
+        ]
     },
-    // Todo(Chris):
-    // Match EOL for automatic semicolon insertion
     {
         declarative_tokens: {
             names: [
@@ -52,8 +52,6 @@ var Tokens = [
             ]
         }
     },
-    // Todo(Chris):
-    // Implement procedural tokens
     {
         procedural_tokens: {
             strings: function (char, next) {
@@ -66,4 +64,3 @@ var Tokens = [
     }
 ];
 module.exports = Object.freeze(Tokens);
-//# sourceMappingURL=tokens.js.map

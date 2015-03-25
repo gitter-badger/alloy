@@ -8,7 +8,7 @@ Created by Chris Prucha
 */
 
 let chalk = require("chalk");
-console.log(chalk.bgYellow(`
+console.log(chalk.white.bgBlack(`
 
 	 █████╗ ██╗     ██╗      ██████╗ ██╗   ██╗
 	██╔══██╗██║     ██║     ██╔═══██╗╚██╗ ██╔╝
@@ -17,7 +17,6 @@ console.log(chalk.bgYellow(`
 	██║  ██║███████╗███████╗╚██████╔╝   ██║
 	╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝    ╚═╝
 	A Web Component Build System from Notion
-
 `));
 
-console.error(chalk.bgRed("Not implemented, exiting."));
+console.error(chalk.bgRed.bold("Not implemented, exiting."));
