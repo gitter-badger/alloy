@@ -23,8 +23,7 @@
     "chalk": "^1.0.0"
   },
   "devDependencies": {
-    "babel": "^4.7.16",
-    "flow": "*"
+    "typescript": "1.5.0"
   },
   "preferGlobal": true
 }
