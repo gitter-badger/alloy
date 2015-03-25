@@ -2,7 +2,10 @@
   "name": "alloy",
   "version": "0.0.1",
   "description": "A Polyglot (any language) HTML Imports-based Module System for Web Components ",
-  "main": "alloy.js",
+  "main": "./build/alloy.es6.js",
+  "bin": {
+    "alloy": "build/alloy.es6.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,5 +18,13 @@
   "bugs": {
     "url": "https://github.com/makenotion/alloy/issues"
   },
-  "homepage": "https://github.com/makenotion/alloy"
+  "homepage": "https://github.com/makenotion/alloy",
+  "dependencies": {
+    "chalk": "^1.0.0"
+  },
+  "devDependencies": {
+    "babel": "^4.7.16",
+    "flow": "*"
+  },
+  "preferGlobal": true
 }
