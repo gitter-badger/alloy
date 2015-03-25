@@ -1,0 +1,12 @@
+[ignore]
+.*/examples/.*
+.*/build/.*
+.*/node_modules/.*
+
+[include]
+
+[libs]
+
+[options]
+module.system=node
+
