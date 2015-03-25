@@ -1,16 +1,13 @@
-#!/usr/bin/env node
-
 /*
 
-alloy.es6.js
+alloy.ts
 
 Created by Chris Prucha
 © 2015 Notion Labs, Inc
 
 */
 
-var chalk  = require("chalk");
-
+let chalk = require("chalk");
 console.log(chalk.bgYellow(`
 
 	 █████╗ ██╗     ██╗      ██████╗ ██╗   ██╗
