@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "module" : "commonjs",
+        "target" : "ES5",
+        "outDir" : "./build/"
+    },
+    "filesGlob": [
+        "./source/*.ts",
+        "./source/**/.ts",
+        "./typings/*.ts",
+        "./typings/**/.ts"
+    ]
+}
