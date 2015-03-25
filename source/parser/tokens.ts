@@ -1,6 +1,6 @@
-/* @flow
+/*
 
-tokens.es6.js
+tokens.ts
 
 Created by Chris Prucha
 © 2015 Notion Labs, Inc
