@@ -2,9 +2,9 @@
   "name": "alloy",
   "version": "0.0.1",
   "description": "A Polyglot (any language) HTML Imports-based Module System for Web Components ",
-  "main": "./build/alloy.es6.js",
+  "main": "bin/alloy-shell.js",
   "bin": {
-    "alloy": "build/alloy.es6.js"
+    "alloy": "bin/alloy-shell.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
