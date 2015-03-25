@@ -1,4 +1,4 @@
-# alloy
+# Alloy
 A Polyglot (any language) HTML Imports-based Module System for Web Components that Builds Instantly.
 
 ## Alloy's Five Principles
@@ -15,22 +15,38 @@ A Polyglot (any language) HTML Imports-based Module System for Web Components th
 ## Design Documentation
 [Alloy Design Document](https://www.makenotion.com/ElV9Qe54jjs81)
 
-## Setup & API
-
-#### Building Alloy
-Alloy is a tiny application written in ES6, it only requires a simple transpile and concatenation by [Babel](https://github.com/babel/babel) to build.
-
-- Install babel globally:
-``$ npm install babel -g``
-
-- Just build:
-``$ babel ./source/ --out-file ./build/alloy.js --source-maps``
-
-- Watch and build:
-``$ babel ./source/ --watch --out-file ./build/alloy.js --source-maps``
+## Using Alloy
+#### Getting Started
+- To install Alloy from the root of the repo:
+``$ npm install -g``
+- To use Alloy type `$ alloy some_command`
 
 #### API
 [Alloy API Design Document](https://www.makenotion.com/IuozGZXxcVGZG)
+
+## Building Alloy
+
+Alloy is a tiny application written in ES6 with Facebook Flow, it only requires a simple transpile and concatenation by [Babel](https://github.com/babel/babel) to build. If you wish to modify Alloy, install Flow to see type errors.
+
+
+##### Pre-requirements
+- Install Flow v.0.7.0 or higher (not on NPM)
+	- [Download the latest release](https://github.com/facebook/flow/releases)
+	- Add the flow binary to your PATH.
+
+- Install Babel globally:
+``$ npm install babel -g``
+
+##### Building
+
+- From the project root, start Flow for type checking with `$ flow `.
+	- *By default, you must type `$ flow` to typecheck after making a change, a Flow IDE plugin is highly recommended!*
+
+- Build once
+	- `$ babel ./source/ --out-dir ./build/ --source-maps`
+
+- Watch and build
+	- `$ babel ./source/ --watch --out-dir ./build/ --source-maps`
 
 ## Contributing
 - *Community*: Submit a pull request and we will follow up with a contributor agreement when the PR is accepted.
