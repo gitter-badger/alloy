@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /*
 
 alloy.es6.js
