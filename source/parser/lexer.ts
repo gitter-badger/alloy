@@ -1,3 +1,5 @@
+import { TokensInterface } from "./tokens"
+
 /*
 
 lexer.ts
@@ -9,8 +11,11 @@ Provide declarative tokens for the lexer to analyze.
 
 */
 
-import { tokens } from "./tokens"
+/*
 
+Interfaces
+
+*/
 
 interface Token {
 	[index: string]: string
@@ -20,32 +25,50 @@ export interface LexerInterface {
 	generateTokens(tokens: string): Array<string>
 }
 
+/*
+
+Implementation
+
+*/
+
 export class Lexer implements LexerInterface {
 
-	constructor() {}
-
+	// Properties
 	private prefixOperators : string = "<>+-&"
 	private postfixOperators: string = "=>&:"
-	private createToken (string: string): Token {
-		return {
-			"type": "",
-			"value": "",
-			"from": "",
-			"to": ""
-		}
-	}
 
-	generateTokens(string: string) {
+	// Inject tokens on creation
+	constructor(private tokens: TokensInterface) {}
+
+	// Public
+	public generateTokens(string: string) {
 		let currentToken: string        = ""
 		let allTokens   : Array<string> = []
-		console.log(tokens)
 
 		for (let character of string) {
+			currentToken += character
+			let string = this.checkStringForToken(currentToken)
+
+
 			console.log(character)
 		}
 
 		return []
 
+	}
+
+	// Helpers
+	private checkStringForToken(string: string): string {
+		return ""
+	}
+
+	private createToken(string: string): Token {
+		return {
+			"type" : "",
+			"value": "",
+			"from" : "",
+			"to"   : ""
+		}
 	}
 
 }

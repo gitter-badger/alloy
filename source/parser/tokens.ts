@@ -29,9 +29,21 @@ ES6 RC3 Module System Examples:
 
 */
 
+/*
+
+Interfaces
+
+*/
+
 export interface TokensInterface {
 	[index: string]: Array<string>
 }
+
+/*
+
+Implementation
+
+*/
 
 export const tokens: TokensInterface = {
 	"ignore": [" "],

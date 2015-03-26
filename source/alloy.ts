@@ -1,3 +1,7 @@
+import { tokens } from "./parser/tokens"
+import { Lexer }  from "./parser/lexer"
+import { chalk }  from "./vendor/npm"
+
 /*
 
 alloy.ts
@@ -6,9 +10,6 @@ Created by Chris Prucha
 © 2015 Notion Labs, Inc
 
 */
-
-import { Lexer } from "./parser/lexer"
-import { chalk } from "./vendor/npm"
 
 console.log(chalk.white.bgBlack(`
 	 █████╗ ██╗     ██╗      ██████╗ ██╗   ██╗
@@ -21,4 +22,4 @@ console.log(chalk.white.bgBlack(`
 `))
 
 // Test
-new Lexer().generateTokens(`import { Lexer } from "./parser/lexer"`)
+new Lexer(tokens).generateTokens(`import { Lexer } from "./parser/lexer"`)
