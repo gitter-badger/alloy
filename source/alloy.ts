@@ -7,7 +7,9 @@ Created by Chris Prucha
 
 */
 
-let chalk = require("chalk");
+import { Lexer } from "./parser/lexer"
+import { chalk } from "./vendor/npm"
+
 console.log(chalk.white.bgBlack(`
 	 █████╗ ██╗     ██╗      ██████╗ ██╗   ██╗
 	██╔══██╗██║     ██║     ██╔═══██╗╚██╗ ██╔╝
@@ -15,7 +17,8 @@ console.log(chalk.white.bgBlack(`
 	██╔══██║██║     ██║     ██║   ██║  ╚██╔╝
 	██║  ██║███████╗███████╗╚██████╔╝   ██║
 	╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝    ╚═╝
-	A Web Component Build System from Notion
-`));
+	ES6 Modules for Polyglot Web Components
+`))
 
-console.error(chalk.bgRed.bold("Not implemented, exiting."));
+// Test
+new Lexer().generateTokens(`import { Lexer } from "./parser/lexer"`)
