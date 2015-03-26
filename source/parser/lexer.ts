@@ -22,7 +22,7 @@ interface Token {
 }
 
 export interface LexerInterface {
-	generateTokens(tokens: string): Array<string>
+	generateTokens(tokens: string): string[]
 }
 
 /*
@@ -34,23 +34,39 @@ Implementation
 export class Lexer implements LexerInterface {
 
 	// Properties
+
 	private prefixOperators : string = "<>+-&"
 	private postfixOperators: string = "=>&:"
 
 	// Inject tokens on creation
+
 	constructor(private tokens: TokensInterface) {}
 
 	// Public
-	public generateTokens(string: string) {
-		let currentToken: string        = ""
-		let allTokens   : Array<string> = []
 
-		for (let character of string) {
-			currentToken += character
-			let string = this.checkStringForToken(currentToken)
+	public generateTokens(inputString: string) {
+		let partialToken: string   = ""
+		let outputTokens: string[] = []
 
+		for (let character of inputString) {
+			partialToken += character
 
-			console.log(character)
+			if (this.ignoreToken(partialToken)) {
+
+				// Reset token and continue
+				console.log(`ignored: ${partialToken}`)
+				partialToken = ""
+				continue
+			}
+
+			if (this.useToken(partialToken)) {
+
+				// Moo
+				console.log(`matched: ${partialToken}`)
+				partialToken = ""
+				continue
+			}
+
 		}
 
 		return []
@@ -58,8 +74,25 @@ export class Lexer implements LexerInterface {
 	}
 
 	// Helpers
-	private checkStringForToken(string: string): string {
-		return ""
+
+	private ignoreToken(partialToken: string) {
+		for (let ignoredToken of this.tokens.ignore) {
+			if (partialToken === ignoredToken) {
+				return true
+			}
+		}
+		return false
+	}
+
+	private useToken(partialToken: string): boolean {
+		for (let tokens of [this.tokens.names, this.tokens.operators]) {
+			for (let matchToken of tokens) {
+				if (partialToken === matchToken) {
+					return true
+				}
+			}
+		}
+		return false
 	}
 
 	private createToken(string: string): Token {
