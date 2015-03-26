@@ -11,4 +11,5 @@ Created by Chris Prucha
 
 */
 
-export let chalk = require("chalk")
+export let chalk     = require("chalk")
+export let commander = require("commander")
