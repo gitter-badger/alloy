@@ -1,6 +1,5 @@
-import { tokens } from "./parser/tokens"
-import { Lexer }  from "./parser/lexer"
-import { chalk }  from "./vendor/npm"
+import { chalk, commander }  from "./vendor/npm"
+import { selftest } from "./tests/selftest"
 
 /*
 
@@ -11,15 +10,36 @@ Created by Chris Prucha
 
 */
 
-console.log(chalk.white.bgBlack(`
-	 █████╗ ██╗     ██╗      ██████╗ ██╗   ██╗
-	██╔══██╗██║     ██║     ██╔═══██╗╚██╗ ██╔╝
-	███████║██║     ██║     ██║   ██║ ╚████╔╝
-	██╔══██║██║     ██║     ██║   ██║  ╚██╔╝
-	██║  ██║███████╗███████╗╚██████╔╝   ██║
-	╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝    ╚═╝
-	ES6 Modules for Polyglot Web Components
-`))
+const version = "0.0.1"
 
-// Test
-new Lexer(tokens).generateTokens(`import { Lexer } from "./parser/lexer"`)
+/*
+
+Splash Screen
+
+*/
+
+console.log(chalk.yellow(`
+            __ __
+     ___ _ / // /__  __ __
+   / _  // // // _ \\/ // /    Alloy v${version}
+   \\_,_//_//_/ \\___/\\_, /     ES6 Modules for Polyglot Web Components
+                   /___/`))
+
+/*
+
+Setup command interface
+
+*/
+
+commander
+  .version(version)
+  .option("-t, --selftest", "run alloy's own unit tests")
+  .parse(process.argv);
+
+// Output help by default
+if (!process.argv.slice(2).length) {
+	commander.outputHelp()
+}
+
+// Route commands to modules
+commander.selftest && selftest()
