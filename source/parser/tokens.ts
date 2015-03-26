@@ -33,7 +33,7 @@ export interface TokensInterface {
 	[index: string]: Array<string>
 }
 
-let DefaultTokens: TokensInterface = {
+export const tokens: TokensInterface = {
 	"ignore": [" "],
 	"names" : [
 		"export",
@@ -55,5 +55,3 @@ let DefaultTokens: TokensInterface = {
 		"\""
 	]
 }
-
-module.exports = Object.freeze(DefaultTokens)
