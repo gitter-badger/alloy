@@ -9,7 +9,6 @@ Created by Chris Prucha
 
 let chalk = require("chalk");
 console.log(chalk.white.bgBlack(`
-
 	 █████╗ ██╗     ██╗      ██████╗ ██╗   ██╗
 	██╔══██╗██║     ██║     ██╔═══██╗╚██╗ ██╔╝
 	███████║██║     ██║     ██║   ██║ ╚████╔╝

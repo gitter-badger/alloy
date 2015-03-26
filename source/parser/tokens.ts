@@ -5,7 +5,7 @@ tokens.ts
 Created by Chris Prucha
 © 2015 Notion Labs, Inc
 
-Provide a list of tokens for the lexer to analyze.
+Provide declarative tokens for the lexer to analyze.
 
 ES6 RC3 Module System Examples:
 
@@ -29,70 +29,31 @@ ES6 RC3 Module System Examples:
 
 */
 
-type IToken = [
-	{
-		ignore_tokens: Array<string>;
-	},
-	{
-		declarative_tokens: {
-			names    : Array<string>;
-			operators: Array<string>;
-		}
-	},
-	{
-		procedural_tokens: {
-			strings: (char: string, next: () => string) => string;
-			names  : (char: string, next: () => string) => string;
-		}
-	}
-];
+export interface TokensInterface {
+	[index: string]: Array<string>
+}
 
-var Tokens: IToken = [
+let DefaultTokens: TokensInterface = {
+	"ignore": [" "],
+	"names" : [
+		"export",
+		"import",
+		"from",
+		"as",
+		"default",
+	],
+	"operators": [
+		"*",
+		"{",
+		"}",
+		",",
+		";"
+	],
+	"string_delimiters": [
+		"`",
+		"'",
+		"\""
+	]
+}
 
-	{
-		ignore_tokens: [" "]
-	},
-
-	// Todo(Chris):
-	// Match EOL for automatic semicolon insertion
-	{
-		declarative_tokens: {
-
-			names: [
-				"import",
-				"from",
-				"as",
-				"export",
-				"default"
-			],
-
-			operators: [
-				"*",
-				"{",
-				"}",
-				",",
-				";"
-			]
-
-		}
-	},
-
-	// Todo(Chris):
-	// Implement procedural tokens
-	{
-		procedural_tokens: {
-
-			strings: (char, next) => {
-				return ""
-			},
-
-			names: (char, next) => {
-				return ""
-			}
-
-		}
-	}
-
-];
-
-module.exports = Object.freeze(Tokens)
+module.exports = Object.freeze(DefaultTokens)
