@@ -10,7 +10,9 @@
     ],
     "files": [
         "./source/alloy.ts",
+        "./source/parser/lexer.ts",
         "./source/parser/tokens.ts",
+        "./source/vendor/npm.ts",
         "./typings/node/node.d.ts",
         "./typings/tsd.d.ts"
     ]
