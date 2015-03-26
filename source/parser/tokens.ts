@@ -36,7 +36,10 @@ Interfaces
 */
 
 export interface TokensInterface {
-	[index: string]: Array<string>
+	ignore           : string[]
+	names            : string[]
+	operators        : string[]
+	string_delimiters: string[]
 }
 
 /*
