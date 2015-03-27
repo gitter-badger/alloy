@@ -18,4 +18,4 @@ Created by Chris Prucha
 
 */
 
-require("../build/alloy.js")
+require("../build/source/alloy.js")

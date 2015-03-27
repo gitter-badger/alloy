@@ -1,5 +1,5 @@
-import { chalk, commander }  from "./vendor/npm"
-import { selftest } from "./tests/selftest"
+import { chalk, commander }  from "../vendor/npm"
+import { selftest } from "./command_modules/tests/selftest"
 
 /*
 
