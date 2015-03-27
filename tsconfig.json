@@ -9,7 +9,13 @@
         "!./node_modules/**/.ts"
     ],
     "files": [
+        "./source/alloy.ts",
+        "./source/command_modules/tests/selftest.ts",
+        "./source/parser/lexer.ts",
+        "./source/parser/tokens.ts",
+        "./source/tests/selftest.ts",
         "./typings/node/node.d.ts",
-        "./typings/tsd.d.ts"
+        "./typings/tsd.d.ts",
+        "./vendor/npm.ts"
     ]
 }
