@@ -646,7 +646,6 @@ declare module "child_process" {
         kill(signal?: string): void;
         send(message: any, sendHandle?: any): void;
         disconnect(): void;
-        unref(): void;
     }
 
     export function spawn(command: string, args?: string[], options?: {

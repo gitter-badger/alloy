@@ -12,8 +12,8 @@ import { chalk, ps } from "../../vendor/npm";
  */
 export function lookupService(callback: (results: Process[]) => void) {
   ps.lookup({
-      command: 'node',
-      arguments: 'alloy-service'
+      command: "node",
+      arguments: "alloy-service"
     },
     (err: string, results: Process[]): void => {
       if (err) {

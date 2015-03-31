@@ -96,8 +96,8 @@ export default class BuildWatcher {
           ignoreInitial: true,
           persistent: true,
         })
-        .on('error', this.onError.bind(this))
-        .on('all', this.onChange.bind(this));
+        .on("error", this.onError.bind(this))
+        .on("all", this.onChange.bind(this));
 
     paths = paths.map((p: string): string => this.resolvePath(p, cwd));
     for (let p of paths) {
@@ -126,7 +126,7 @@ export default class BuildWatcher {
   }
 
   // TODO(joeloyj): Build from configuration.
-  private build() {
+  private build(): void {
     child_process.fork("./build/source/alloy-build");
   }
 

@@ -26,15 +26,15 @@ export default class Client {
   public watch(paths: string[], callback: () => void): void {
     ipc.connectTo(SERVICE_ID, (): void => {
 
-      ipc.of[SERVICE_ID].on('connect', (): void => {
+      ipc.of[SERVICE_ID].on("connect", (): void => {
         let data: WatchData = {
           paths: paths,
           cwd: process.cwd()
         };
-        ipc.of[SERVICE_ID].emit('watch', data);
+        ipc.of[SERVICE_ID].emit("watch", data);
       });
 
-      ipc.of[SERVICE_ID].on('watched', (): void => {
+      ipc.of[SERVICE_ID].on("watched", (): void => {
         console.info(
             chalk.yellow("Alloy is now watching the following paths:", paths));
         callback();
@@ -48,12 +48,12 @@ export default class Client {
   public stop(): void {
     ipc.connectTo(SERVICE_ID, (): void => {
 
-      ipc.of[SERVICE_ID].on('connect', (): void => {
+      ipc.of[SERVICE_ID].on("connect", (): void => {
         console.info(chalk.yellow("Stopping Alloy service..."));
-        ipc.of[SERVICE_ID].emit('stop');
+        ipc.of[SERVICE_ID].emit("stop");
       });
 
-      ipc.of[SERVICE_ID].on('stopped', (): void => {
+      ipc.of[SERVICE_ID].on("stopped", (): void => {
         console.info(chalk.yellow("Alloy service stopped."));
         process.exit();
       });

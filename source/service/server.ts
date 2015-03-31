@@ -23,18 +23,18 @@ export default class Server {
     console.log(BANNER + "\n");
     console.info(chalk.yellow("Starting Alloy service..."));
 
-    ipc.config.appspace = 'alloy.';
-    ipc.config.socketRoot = '/tmp/';
+    ipc.config.appspace = "alloy.";
+    ipc.config.socketRoot = "/tmp/";
     ipc.config.id = SERVICE_ID;
     ipc.config.maxConnections = 100;
     ipc.config.retry = 500;
     ipc.config.silent = true;
 
     ipc.serve((): void => {
-      ipc.server.on('stop', (): void => this.stop());
-      ipc.server.on('watch',
+      ipc.server.on("stop", (): void => this.stop());
+      ipc.server.on("watch",
           (data: WatchData, socket): void => this.onWatch(data, socket));
-      ipc.server.on('unwatch',
+      ipc.server.on("unwatch",
           (data: WatchData, socket): void => this.onUnwatch(data, socket));
     });
     ipc.server.start();
@@ -45,18 +45,18 @@ export default class Server {
    */
   stop(): void {
     this.watcher.exit();
-    ipc.server.broadcast('stopped');
+    ipc.server.broadcast("stopped");
     console.info(chalk.yellow("Alloy service stopped."));
     process.exit();
   }
 
   private onWatch(data: WatchData, socket): void {
     this.watcher.watch(data.paths, data.cwd);
-    ipc.server.emit(socket, 'watched');
+    ipc.server.emit(socket, "watched");
   }
 
   private onUnwatch(data: WatchData, socket): void {
     this.watcher.unwatch(data.paths, data.cwd);
-    ipc.server.emit(socket, 'unwatched');
+    ipc.server.emit(socket, "unwatched");
   }
 }
