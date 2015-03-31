@@ -11,6 +11,7 @@ import Server from "./service/server";
  *
  * @author Joel Ong (joelo@google.com)
  * @copyright 2015 Notion Labs, Inc
+ * @copyright 2015 Google Inc
  */
 
 commander

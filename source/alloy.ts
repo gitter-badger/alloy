@@ -7,6 +7,7 @@ import { selftest } from "./command_modules/tests/selftest";
  *
  * @file ES6 Modules for Polyglot Web Components.
  * @copyright 2015 Notion Labs, Inc
+ * @copyright 2015 Google Inc
  *
  * @author Chris Prucha (chris@makenotion.com)
  * @author Joel Ong (joelo@google.com)

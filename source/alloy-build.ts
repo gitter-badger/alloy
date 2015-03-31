@@ -7,6 +7,7 @@ import { chalk, commander } from "../vendor/npm";
  *
  * @author Joel Ong (joelo@google.com)
  * @copyright 2015 Notion Labs, Inc
+ * @copyright 2015 Google Inc
  */
 
 const description: string =
