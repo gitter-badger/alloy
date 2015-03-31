@@ -2,6 +2,8 @@ import { SERVICE_ID } from "../lib/constants";
 import { WatchData } from "types";
 import { chalk, ipc } from "../../vendor/npm";
 
+import _ = require("lodash");
+
 /**
  * Alloy service client. Uses unix sockets for IPC.
  *
@@ -9,13 +11,15 @@ import { chalk, ipc } from "../../vendor/npm";
  */
 export default class Client {
   constructor() {
-    ipc.config.appspace = "alloy.";
-    ipc.config.socketRoot = "/tmp/";
-    ipc.config.id = "client";
-    ipc.config.maxConnections = 100;
-    ipc.config.retry = 500;
-    ipc.config.stopRetrying = 10;
-    ipc.config.silent = true;
+    _.extend(ipc.config, {
+      appspace: "alloy.",
+      socketRoot: "/tmp/",
+      id: "client",
+      maxConnections: 100,
+      retry: 500,
+      stopRetrying: 10,
+      silent: true
+    });
   }
 
   /**

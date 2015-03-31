@@ -3,6 +3,8 @@ import { WatchData } from "types";
 import { chalk, ipc } from "../../vendor/npm";
 import BuildWatcher from "./build_watcher";
 
+import _ = require("lodash");
+
 /**
  * Service for asynchronous task execution such as file watching and building,
  * as well as maintaining persistant state across Alloy.
@@ -23,12 +25,14 @@ export default class Server {
     console.log(BANNER + "\n");
     console.info(chalk.yellow("Starting Alloy service..."));
 
-    ipc.config.appspace = "alloy.";
-    ipc.config.socketRoot = "/tmp/";
-    ipc.config.id = SERVICE_ID;
-    ipc.config.maxConnections = 100;
-    ipc.config.retry = 500;
-    ipc.config.silent = true;
+    _.extend(ipc.config, {
+      appspace: "alloy.",
+      socketRoot: "/tmp/",
+      id: SERVICE_ID,
+      maxConnections: 100,
+      retry: 500,
+      silent: true
+    });
 
     ipc.serve((): void => {
       ipc.server.on("stop", (): void => this.stop());
