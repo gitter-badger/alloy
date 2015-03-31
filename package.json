@@ -21,7 +21,10 @@
   "homepage": "https://github.com/makenotion/alloy",
   "dependencies": {
     "chalk": "^1.0.0",
-    "commander": "^2.7.1"
+    "chokidar": "^1.0.0-rc4",
+    "commander": "^2.7.1",
+    "node-ipc": "^1.1.13",
+    "ps-node": "0.0.3"
   },
   "devDependencies": {},
   "preferGlobal": true

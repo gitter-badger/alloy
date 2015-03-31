@@ -1,4 +1,4 @@
-import { chalk, commander, package } from "../vendor/npm"
+import { chalk, commander, package_json } from "../vendor/npm"
 import { selftest } from "./command_modules/tests/selftest"
 
 /*
@@ -19,7 +19,7 @@ Splash Screen
 console.log(chalk.yellow(`
             __ __
      ___ _ / // /__  __ __
-   / _  // // // _ \\/ // /    Alloy v${package.version}
+   / _  // // // _ \\/ // /    Alloy v${package_json.version}
    \\_,_//_//_/ \\___/\\_, /     ES6 Modules for Polyglot Web Components
                    /___/`))
 
@@ -30,7 +30,7 @@ Setup command interface
 */
 
 commander
-  .version(package.version)
+  .version(package_json.version)
   .option("-t, --selftest", "run alloy's own unit tests")
   .parse(process.argv);
 
