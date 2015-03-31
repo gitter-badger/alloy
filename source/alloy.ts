@@ -22,6 +22,7 @@ commander
   .description("ES6 Modules for Polyglot Web Components")
   .command("build [pathspec...]", "build files, defaults to working directory")
   .command("watch [pathspec...]", "watch files, defaults to working directory")
+  .command("service [start|stop]", "start or stop Alloy service")
   .option("-t, --selftest", "run alloy's own unit tests")
   .parse(process.argv);
 
