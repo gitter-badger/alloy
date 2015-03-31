@@ -27,7 +27,7 @@ commander
     .parse(process.argv);
 
 let paths: string[] = commander.args;
-if (paths.length == 0) {
+if (paths.length === 0) {
   // If no paths specified, use the working directory.
   paths.push(process.cwd());
 }
@@ -35,7 +35,7 @@ if (paths.length == 0) {
 // Connect to Alloy service or start it if it is not already running.
 lookupService((results: Process[]): void => {
   // Start Alloy service if it is not running yet.
-  if (results.length == 0) {
+  if (results.length === 0) {
     console.info(
         chalk.yellow("Alloy service is not running, starting service..."));
     child_process.fork("./build/source/alloy-service",
@@ -44,7 +44,7 @@ lookupService((results: Process[]): void => {
   }
 
   let paths: string[] = commander.args;
-  if (paths.length == 0) {
+  if (paths.length === 0) {
     // If no paths specified, use the working directory.
     paths.push(process.cwd());
   }

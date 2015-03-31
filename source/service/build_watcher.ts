@@ -34,7 +34,7 @@ export default class BuildWatcher {
 
     for (let p of paths) {
       let resolvedPath: string = this.resolvePath(p, cwd);
-      if (this.watchList.indexOf(resolvedPath) == -1) {
+      if (this.watchList.indexOf(resolvedPath) === -1) {
         this.watchList.push(resolvedPath);
         console.info("Watching path: ", resolvedPath);
       } else {
@@ -88,7 +88,7 @@ export default class BuildWatcher {
     }
 
     // Use current working directory if paths not specified.
-    if (!paths || paths.length == 0) {
+    if (!paths || paths.length === 0) {
       paths = [ cwd ];
     }
     this.watcher = chokidar
@@ -101,7 +101,7 @@ export default class BuildWatcher {
 
     paths = paths.map((p: string): string => this.resolvePath(p, cwd));
     for (let p of paths) {
-      if (this.watchList.indexOf(p) == -1) {
+      if (this.watchList.indexOf(p) === -1) {
         console.info("Watching path: ", p);
         this.watcher.add(p);
       }

@@ -62,7 +62,7 @@ function start(): void {
 function stop(): void {
   // Lookup the Alloy service to see if it's running.
   lookupService((results: Process[]): void => {
-    if (results.length == 1) {
+    if (results.length === 1) {
       console.error(chalk.red("Alloy service is not running."));
       return;
     }
