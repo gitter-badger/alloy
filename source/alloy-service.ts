@@ -29,9 +29,15 @@ commander
 commander.parse(process.argv);
 
 // Output help if no command was provided.
-if (!process.argv.slice(2).length
-    || (process.argv[2] !== "start" && process.argv[2] !== "stop")) {
-	commander.help();
+if (!process.argv.slice(2).length) {
+  commander.help();
+}
+
+// Show error message if command was not recognized.
+if (process.argv[2] !== "start" && process.argv[2] !== "stop") {
+  console.error("alloy: '" + process.argv[2] + "' is not an alloy-service " +
+      "command. See 'alloy service --help'.");
+  process.exit();
 }
 
 /**
