@@ -18,6 +18,7 @@ A Polyglot (any language) HTML Imports-based Module System for Web Components th
 
 ## Using Alloy
 #### Getting Started
+** Note: Alloy is not yet released and has limited functionality. **
 - To install Alloy from the root of the repo:
 ``$ npm install -g``
 - To use Alloy `$ alloy some_command`
@@ -31,13 +32,13 @@ Alloy is a tiny application written in ES6 with TypeScript type annotations and 
 
 
 ##### Pre-requirements
-- Install Typescript v.1.5.0 or higher (not on NPM yet)
+- Install TypeScript v.1.5.0 or higher (not on NPM yet)
 	1. [Clone and build TypeScript 1.5.0 or higher](https://github.com/Microsoft/typescript)
 	2. Install tsc globally by runnign `$ npm install -g` from the TypeScript directory root.
 	3. Check that TypeScript is now v.1.5.0+ by doing `$ tsc -v`.
 
 
-- Install the Typescript Definitions manager for DefinitelyTyped.
+- Install the TypeScript Definitions manager for DefinitelyTyped.
 	1. `$ npm install -g tsd`
 
 ##### Compiling
@@ -55,4 +56,4 @@ Alloy is a tiny application written in ES6 with TypeScript type annotations and 
 - *Community*:
   - [Sign the ICLA](https://docs.google.com/forms/d/1GBhRzcoMD-oSkDfitPEtEEsYzvpE680X2L5tjdGmMFg/viewform)
   - Submit a pull request.
-- *Notion employee note*: use production Notion for all open source projects (design documents, etc).
+- *Notion employee note*: Use production Notion for all open source projects (design documents, etc).
