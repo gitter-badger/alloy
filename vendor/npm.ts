@@ -11,6 +11,11 @@ Created by Chris Prucha
 
 */
 
-export let chalk     = require("chalk")
-export let commander = require("commander")
-export let package   = require("../../package.json")
+export let chalk         = require("chalk")
+export let child_process = require('child_process')
+export let chokidar      = require("chokidar")
+export let commander     = require("commander")
+export let ipc           = require("node-ipc")
+export let path          = require("path")
+export let ps            = require("ps-node")
+export let package_json  = require("../../package.json")
