@@ -4,7 +4,10 @@
   "description": "A Polyglot (any language) HTML Imports-based Module System for Web Components ",
   "main": "bin/alloy-shell.js",
   "bin": {
-    "alloy": "bin/alloy-shell.js"
+    "alloy": "bin/alloy-shell.js",
+    "alloy-build": "bin/build.js",
+    "alloy-service": "bin/service.js",
+    "alloy-watch": "bin/watch.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -23,6 +26,7 @@
     "chalk": "^1.0.0",
     "chokidar": "^1.0.0-rc4",
     "commander": "^2.7.1",
+    "lodash": "^3.6.0",
     "node-ipc": "^1.1.13",
     "ps-node": "0.0.3"
   },
