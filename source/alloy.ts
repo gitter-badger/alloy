@@ -1,5 +1,4 @@
-import { BANNER } from "./lib/constants";
-import { commander, package_json } from "../vendor/npm";
+import { chalk, commander, package_json } from "../vendor/npm";
 import { selftest } from "./command_modules/tests/selftest";
 
 /**
@@ -14,7 +13,12 @@ import { selftest } from "./command_modules/tests/selftest";
  */
 
 // Splash Screen
-console.log(BANNER);
+console.log(chalk.yellow(`
+            __ __
+     ___ _ / // /__  __ __
+   / _  // // // _ \\/ // /    Alloy v${package_json.version}
+   \\_,_//_//_/ \\___/\\_, /     ES6 Modules for Polyglot Web Components
+                   /___/`));
 
 // Setup command interface
 commander

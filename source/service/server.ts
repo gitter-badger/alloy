@@ -1,4 +1,4 @@
-import { BANNER, SERVICE_ID } from "../lib/constants";
+import { SERVICE_ID } from "../lib/constants";
 import { WatchData } from "types";
 import { chalk, ipc } from "../../vendor/npm";
 import BuildWatcher from "./build_watcher";
@@ -22,7 +22,6 @@ export default class Server {
    * Start Alloy service.
    */
   start(): void {
-    console.log(BANNER + "\n");
     console.info(chalk.yellow("Starting Alloy service..."));
 
     _.extend(ipc.config, {
