@@ -12,13 +12,13 @@ import _ = require("lodash");
 export default class Client {
   constructor() {
     _.extend(ipc.config, {
-      appspace: "alloy.",
-      socketRoot: "/tmp/",
-      id: "client",
-      maxConnections: 100,
-      retry: 500,
-      stopRetrying: 10,
-      silent: true
+      appspace       : "alloy.",
+      socketRoot     : "/tmp/",
+      id             : "client",
+      maxConnections : 100,
+      retry          : 500,
+      stopRetrying   : 10,
+      silent         : true
     });
   }
 

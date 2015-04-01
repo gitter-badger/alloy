@@ -26,12 +26,12 @@ export default class Server {
     console.info(chalk.yellow("Starting Alloy service..."));
 
     _.extend(ipc.config, {
-      appspace: "alloy.",
-      socketRoot: "/tmp/",
-      id: SERVICE_ID,
-      maxConnections: 100,
-      retry: 500,
-      silent: true
+      appspace       : "alloy.",
+      socketRoot     : "/tmp/",
+      id             : SERVICE_ID,
+      maxConnections : 100,
+      retry          : 500,
+      silent         : true
     });
 
     ipc.serve((): void => {
