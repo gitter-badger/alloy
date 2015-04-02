@@ -12,13 +12,13 @@ const BUILD_DEBOUNCE_MS = 50;
  */
 export default class BuildWatcher {
   private watcher: fs.FSWatcher;
-  private watchList: string[];
+  private watchList: Set<string>;
   private isInitialized: boolean;
   private debouncedBuild: () => void;
 
   constructor() {
     this.isInitialized = false;
-    this.watchList = [];
+    this.watchList = new Set();
     this.debouncedBuild = _.debounce(this.build.bind(this), BUILD_DEBOUNCE_MS);
   }
 
@@ -34,11 +34,11 @@ export default class BuildWatcher {
 
     for (let p of paths) {
       let resolvedPath: string = this.resolvePath(p, cwd);
-      if (this.watchList.indexOf(resolvedPath) === -1) {
-        this.watchList.push(resolvedPath);
-        console.info("Watching path: ", resolvedPath);
-      } else {
+      if (this.watchList.has(resolvedPath)) {
         console.info("Rewatching path: ", resolvedPath);
+      } else {
+        this.watchList.add(resolvedPath);
+        console.info("Watching path: ", resolvedPath);
       }
       this.watcher.add(resolvedPath);
     }
@@ -56,10 +56,7 @@ export default class BuildWatcher {
 
     for (let p of paths) {
       let resolvedPath: string = this.resolvePath(p, cwd);
-      let index: number = this.watchList.indexOf(resolvedPath);
-      if (index >= 0) {
-        delete this.watchList[index];
-      }
+      this.watchList.delete(resolvedPath);
       console.info("Unwatching path: ", resolvedPath);
     }
     this.watcher.unwatch(paths);
@@ -101,7 +98,7 @@ export default class BuildWatcher {
 
     paths = paths.map((p: string): string => this.resolvePath(p, cwd));
     for (let p of paths) {
-      if (this.watchList.indexOf(p) === -1) {
+      if (!this.watchList.has(p)) {
         console.info("Watching path: ", p);
         this.watcher.add(p);
       }
