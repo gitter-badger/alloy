@@ -1,5 +1,5 @@
 import { chalk, commander, package_json } from "../vendor/npm";
-import { selftest } from "./command_modules/tests/selftest";
+import { selftest } from "./tests/selftest";
 
 /**
  * alloy.js

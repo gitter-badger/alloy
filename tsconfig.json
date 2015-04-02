@@ -13,7 +13,6 @@
         "./source/alloy-service.ts",
         "./source/alloy-watch.ts",
         "./source/alloy.ts",
-        "./source/command_modules/tests/selftest.ts",
         "./source/lib/constants.ts",
         "./source/lib/types.ts",
         "./source/parser/lexer.ts",
