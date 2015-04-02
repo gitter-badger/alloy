@@ -12,7 +12,7 @@ import { selftest } from "./command_modules/tests/selftest";
  * @author Joel Ong (joelo@google.com)
  */
 
-const subcommands: string[] = ["build", "watch", "service"];
+const commands: string[] = ["build", "watch", "service"];
 
 // Splash Screen
 console.log(chalk.yellow(`
@@ -20,15 +20,20 @@ console.log(chalk.yellow(`
      ___ _ / // /__  __ __
    / _  // // // _ \\/ // /    Alloy v${package_json.version}
    \\_,_//_//_/ \\___/\\_, /     ES6 Modules for Polyglot Web Components
-                   /___/`));
+                   /___/
+`));
 
 // Setup command interface
 commander
   .version(package_json.version)
   .description("ES6 Modules for Polyglot Web Components")
   .command("build [pathspec...]", "build files, defaults to working directory")
+  .command("config [set|get]", "get or set properties, displays all by default")
+  .command("init", "initialize Alloy with interactive configuration setup")
   .command("watch [pathspec...]", "watch files, defaults to working directory")
   .command("service [start|stop]", "start or stop Alloy service")
+  .command("status", "display service and build status")
+  .command("trace [file]", "show dependencies within default of 3 degrees")
   .option("-t, --selftest", "run alloy's own unit tests")
   .parse(process.argv);
 
@@ -38,7 +43,7 @@ if (!process.argv.slice(2).length) {
 }
 
 // Show error message if command is unrecognized.
-if (commander.args.length && subcommands.indexOf(commander.args[0]) === -1) {
+if (commander.args.length && commands.indexOf(commander.args[0]) === -1) {
   console.error("alloy: '" + commander.args[0] + "' is not an alloy " +
       "command. See 'alloy --help'.");
   process.exit();
