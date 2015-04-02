@@ -14,6 +14,8 @@ import Server from "./service/server";
  * @copyright 2015 Google Inc
  */
 
+const subcommands: string[] = ["start", "stop"];
+
 commander
     .command("start [pathspec...]")
     .description(`Starts Alloy service and optionally watches files
@@ -34,8 +36,10 @@ if (!process.argv.slice(2).length) {
 }
 
 // Show error message if command was not recognized.
-if (process.argv[2] !== "start" && process.argv[2] !== "stop") {
-  console.error("alloy: '" + process.argv[2] + "' is not an alloy-service " +
+if (commander.args.length
+    && typeof commander.args[0] === "string"
+    && subcommands.indexOf(commander.args[0]) === -1) {
+  console.error("alloy: '" + commander.args[0] + "' is not an alloy-service " +
       "command. See 'alloy service --help'.");
   process.exit();
 }

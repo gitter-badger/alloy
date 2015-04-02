@@ -12,6 +12,8 @@ import { selftest } from "./command_modules/tests/selftest";
  * @author Joel Ong (joelo@google.com)
  */
 
+const subcommands: string[] = ["build", "watch", "service"];
+
 // Splash Screen
 console.log(chalk.yellow(`
             __ __
@@ -30,9 +32,16 @@ commander
   .option("-t, --selftest", "run alloy's own unit tests")
   .parse(process.argv);
 
-// Output help by default
+// Output help by if no command was provided.
 if (!process.argv.slice(2).length) {
-	commander.outputHelp();
+	commander.help();
+}
+
+// Show error message if command is unrecognized.
+if (commander.args.length && subcommands.indexOf(commander.args[0]) === -1) {
+  console.error("alloy: '" + commander.args[0] + "' is not an alloy " +
+      "command. See 'alloy --help'.");
+  process.exit();
 }
 
 // Route commands to modules
