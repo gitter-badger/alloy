@@ -1,8 +1,8 @@
 import { Process } from "types";
-import { chalk, commander } from "../vendor/npm";
-import { lookupService } from "./service/utils";
-import Client from "./service/client";
-import Server from "./service/server";
+import { chalk, commander } from "../../vendor/npm";
+import { lookupService } from "../service/utils";
+import Client from "../service/client";
+import Server from "../service/server";
 
 /**
  * alloy-service.js

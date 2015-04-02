@@ -9,10 +9,10 @@
         "!./node_modules/**/.ts"
     ],
     "files": [
-        "./source/alloy-build.ts",
-        "./source/alloy-service.ts",
-        "./source/alloy-watch.ts",
         "./source/alloy.ts",
+        "./source/commands/alloy-build.ts",
+        "./source/commands/alloy-service.ts",
+        "./source/commands/alloy-watch.ts",
         "./source/lib/constants.ts",
         "./source/lib/types.ts",
         "./source/parser/lexer.ts",

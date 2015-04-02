@@ -1,4 +1,4 @@
-import { chalk, commander } from "../vendor/npm";
+import { chalk, commander } from "../../vendor/npm";
 
 /**
  * alloy-build.js
