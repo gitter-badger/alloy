@@ -11,7 +11,11 @@
     "files": [
         "./source/alloy.ts",
         "./source/commands/alloy-build.ts",
+        "./source/commands/alloy-config.ts",
+        "./source/commands/alloy-init.ts",
         "./source/commands/alloy-service.ts",
+        "./source/commands/alloy-status.ts",
+        "./source/commands/alloy-trace.ts",
         "./source/commands/alloy-watch.ts",
         "./source/lib/constants.ts",
         "./source/lib/types.ts",
