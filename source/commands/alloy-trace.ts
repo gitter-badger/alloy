@@ -28,7 +28,7 @@ if (!commander.args.length) {
 
 let degrees: number = commander.degrees || 3;
 console.info(chalk.yellow(
-    `Tracing dependencies within ${degrees} of ${commander.args[0]}`));
+    `Tracing dependencies within ${degrees} of ${commander.args[0]} ...`));
 
 // TODO(joeloyj): Implement.
 console.error(chalk.red("Not implemented."));

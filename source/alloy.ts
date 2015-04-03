@@ -12,7 +12,8 @@ import { selftest } from "./tests/selftest";
  * @author Joel Ong (joelo@google.com)
  */
 
-const commands: string[] = ["build", "watch", "service"];
+const commands: string[] =
+    ["build", "config", "init", "service", "status", "trace", "watch"];
 
 // Splash Screen
 console.log(chalk.yellow(`
@@ -30,10 +31,10 @@ commander
   .command("build", "build files with Alloy")
   .command("config", "display or set Alloy configuration properties")
   .command("init", "setup Alloy configuration interactively")
-  .command("watch", "watch files using Alloy")
   .command("service", "start or stop Alloy service")
   .command("status", "display Alloy service status and build info")
   .command("trace", "show dependencies within N degrees of a file")
+  .command("watch", "watch files using Alloy")
   .option("-t, --selftest", "run alloy's own unit tests")
   .parse(process.argv);
 

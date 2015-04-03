@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-require("../build/source/alloy-service.js")
+require("../build/source/commands/alloy-service.js")

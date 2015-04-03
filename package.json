@@ -6,7 +6,11 @@
   "bin": {
     "alloy": "bin/alloy-shell.js",
     "alloy-build": "bin/build.js",
+    "alloy-config": "bin/config.js",
+    "alloy-init": "bin/init.js",
     "alloy-service": "bin/service.js",
+    "alloy-status": "bin/status.js",
+    "alloy-trace": "bin/trace.js",
     "alloy-watch": "bin/watch.js"
   },
   "scripts": {
