@@ -27,13 +27,13 @@ console.log(chalk.yellow(`
 commander
   .version(package_json.version)
   .description("ES6 Modules for Polyglot Web Components")
-  .command("build [pathspec...]", "build files, defaults to working directory")
-  .command("config [set|get]", "get or set properties, displays all by default")
-  .command("init", "initialize Alloy with interactive configuration setup")
-  .command("watch [pathspec...]", "watch files, defaults to working directory")
-  .command("service [start|stop]", "start or stop Alloy service")
-  .command("status", "display service and build status")
-  .command("trace [file]", "show dependencies within default of 3 degrees")
+  .command("build", "build files with Alloy")
+  .command("config", "display or set Alloy configuration properties")
+  .command("init", "setup Alloy configuration interactively")
+  .command("watch", "watch files using Alloy")
+  .command("service", "start or stop Alloy service")
+  .command("status", "display Alloy service status and build info")
+  .command("trace", "show dependencies within N degrees of a file")
   .option("-t, --selftest", "run alloy's own unit tests")
   .parse(process.argv);
 
