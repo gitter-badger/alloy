@@ -54,17 +54,12 @@ function start(): void {
   // running instance.
   lookupService((results: Process[]): void => {
     if (results.length > 1) {
-      console.error(chalk.red("Alloy service is already running.",
-          "\nUse \"alloy watch [pathspec..]\" instead."));
+      console.error(chalk.red("Alloy service is already running."));
       return;
     }
 
     // Start Alloy service and watch any given paths.
     new Server().start();
-    let args = process.argv.slice(3);
-    if (args.length) {
-      new Client().watch(args, () => {});
-    }
   });
 }
 
