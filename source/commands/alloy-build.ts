@@ -11,15 +11,21 @@ import { chalk, commander } from "../../vendor/npm";
  */
 
 const description: string =
-`Builds files given by [pathspec...].
+`Builds files using the current Alloy configuration.
 
-  If [pathspec...] is not specified, the current working directory will be
-  used instead. If any of [pathspec...] is a directory, all descendents of
-  the directory will be built.`;
+  If specified, [pathspec...] will be used instead of the current Alloy config.
+  If no [pathspec...] or Alloy config is present, the current working directory
+  will be used instead.
+
+  If any of [pathspec...] is a directory, all descendents of the directory
+  will be built.`;
 
 commander
     .usage("[options] [pathspec...]")
     .description(description)
+    .option("-v, --vulcanize",
+        "run vulcanize, taking all proceeding tokens as arguments")
+    .option("--clean", "removes build directory and rebuilds all files")
     .parse(process.argv);
 
 console.info(chalk.yellow("Building using Alloy..."));
