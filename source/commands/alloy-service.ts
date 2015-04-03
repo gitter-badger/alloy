@@ -14,29 +14,23 @@ import Server from "../service/server";
  * @copyright 2015 Google Inc
  */
 
-const description: string = `Utility for interacting with Alloy service.`;
+const description: string = "Utility for interacting with Alloy service. "
+    + "Starts the service by default.";
 const commands: string[] = ["start", "stop"];
 
 commander.description(description);
 
 commander
-    .command("start [pathspec...]")
-    .description(`Starts Alloy service and optionally watches files
-                     given by [pathspec...].
-`)
+    .command("start")
+    .description(`start Alloy service (default)`)
     .action(start);
 
 commander
     .command("stop")
-    .description("Stops Alloy service.")
+    .description("stop Alloy service")
     .action(stop);
 
 commander.parse(process.argv);
-
-// Output help if no command was provided.
-if (!process.argv.slice(2).length) {
-  commander.help();
-}
 
 // Show error message if command was not recognized.
 if (commander.args.length
@@ -45,6 +39,11 @@ if (commander.args.length
   console.error("alloy: '" + commander.args[0] + "' is not an alloy-service " +
       "command. See 'alloy service --help'.");
   process.exit();
+}
+
+// Default to start if no command was provided.
+if (!process.argv.slice(2).length) {
+  start();
 }
 
 /**
