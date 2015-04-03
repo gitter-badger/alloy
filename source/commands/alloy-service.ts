@@ -22,7 +22,7 @@ commander.description(description);
 
 commander
     .command("start")
-    .description(`start Alloy service (default)`)
+    .description("start Alloy service (default)")
     .action(start);
 
 commander

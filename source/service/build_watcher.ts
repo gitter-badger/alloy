@@ -124,7 +124,7 @@ export default class BuildWatcher {
 
   // TODO(joeloyj): Build from configuration.
   private build(): void {
-    child_process.fork("./build/source/alloy-build");
+    child_process.fork("./build/source/commands/alloy-build");
   }
 
   private onError(error: string): void {
