@@ -76,5 +76,5 @@ function stop(): void {
 
     // Send stop message to Alloy service.
     new Client().stop();
-});
+  });
 }
