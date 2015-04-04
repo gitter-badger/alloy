@@ -1,4 +1,5 @@
-import { chalk, commander } from "../../vendor/npm";
+import { CONFIG_PATH } from "../lib/constants";
+import { chalk, commander, fs } from "../../vendor/npm";
 
 /**
  * alloy-init.js
@@ -24,5 +25,25 @@ if (commander.args.length) {
   process.exit();
 }
 
-// TODO(joeloyj): Implement.
-console.error(chalk.red("Not implemented."));
+try {
+  fs.statSync(CONFIG_PATH);
+  console.error(chalk.red("alloy: Alloy configuration already exists."));
+  process.exit();
+} catch (e) {
+  if (e.errno !== -2) {
+    // Got a stat error other than ENOENT (file not found).
+    console.error(e.toString());
+    console.error(chalk.red("alloy: init failed due to stat error."));
+    process.exit();
+  }
+}
+
+// TODO(joeloyj): Add interactive configuration.
+let config: Object = {};
+
+try {
+  fs.writeFileSync(CONFIG_PATH, JSON.stringify(config));
+  console.info("Created Alloy configuration.");
+} catch (e) {
+  console.error(chalk.red("alloy: error writing .alloy config."));
+}

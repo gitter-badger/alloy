@@ -7,3 +7,5 @@ import { chalk, package_json } from "../../vendor/npm";
  */
 
 export const SERVICE_ID = "alloy_ipc_service";
+
+export const CONFIG_PATH = "./.alloy";
