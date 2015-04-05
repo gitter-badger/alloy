@@ -43,7 +43,8 @@ let config: Object = {};
 
 try {
   fs.writeFileSync(CONFIG_PATH, JSON.stringify(config));
-  console.info("Created Alloy configuration.");
+  console.info(chalk.yellow("Created Alloy configuration."));
 } catch (e) {
+  console.error(e.toString());
   console.error(chalk.red("alloy: error writing .alloy config."));
 }
