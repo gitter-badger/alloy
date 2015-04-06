@@ -21,6 +21,7 @@
         "./source/commands/alloy-watch.ts",
         "./source/lib/config.ts",
         "./source/lib/constants.ts",
+        "./source/lib/properties.ts",
         "./source/lib/types.ts",
         "./source/parser/lexer.ts",
         "./source/parser/tokens.ts",
