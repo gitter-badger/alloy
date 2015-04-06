@@ -1,5 +1,6 @@
-import { chalk, commander, fs } from "../../vendor/npm";
 import { Config } from "../lib/config";
+import { Properties } from "../lib/properties";
+import { chalk, commander, fs } from "../../vendor/npm";
 
 /**
  * alloy-config.js
@@ -14,34 +15,36 @@ const description: string =
 `Utility for configuring Alloy. Displays all configured properties by default.
 
   Available properties:
-    paths     an array of paths to monitor for file changes for automatic builds
-    exclude   an array of paths to exclude from automatic building
+    paths     a list of paths to monitor for file changes for automatic building
+    exclude   a list of paths to exclude from automatic building
 
   All properties use JSON notation, and file paths can be specified in any form
   supported by anymatch. See https://github.com/es128/anymatch.`;
-const commands: string[] = ["list", "get", "set", "delete"];
+
+const commands: string[] = ["add", "delete", "list", "get", "set"];
 
 commander.description(description);
 
 commander
-    .command("list")
-    .description("list values for all properties (default)")
-    .action(list);
-
-commander
-    .command("get [property]")
-    .description("displays the value of the given property")
-    .action(getProperty);
-
-commander
-    .command("set [property] [value]")
-    .description("sets the value of the given property")
-    .action(setProperty);
-
+    .command("add [property] [value]")
+    .description("adds a value to the given list property")
+    .action(addProperty);
 commander
     .command("delete [property]")
     .description("deletes the given property")
     .action(deleteProperty);
+commander
+    .command("get [property]")
+    .description("displays the value of the given property")
+    .action(getProperty);
+commander
+    .command("list")
+    .description("list values for all properties (default)")
+    .action(list);
+commander
+    .command("set [property] [value]")
+    .description("sets the value of the given property")
+    .action(setProperty);
 
 commander.parse(process.argv);
 
@@ -70,22 +73,23 @@ function list(): void {
  * Displays the value of the given property.
  */
 function getProperty(): void {
+  let property: string = commander.args[0];
+
   // Show usage if there no property was specified.
-  if (!commander.args.length || typeof commander.args[0] !== "string") {
+  if (!commander.args.length || typeof property !== "string") {
     commander.help();
   }
   // Make sure Alloy is configured.
   let config: Config = getConfig();
 
   // Check that the specified property is valid.
-  checkProperty(commander.args[0]);
+  checkProperty(property);
 
-  if (config.isPropertyConfigured(commander.args[0])) {
+  if (config.isConfigured(property)) {
     console.log(chalk.yellow(
-        commander.args[0], "=", config.getProperty(commander.args[0])));
+        property, "=", JSON.stringify(config.getConfig()[property], null, 2)));
   } else {
-    console.error(
-        chalk.yellow(`alloy: property '${commander.args[0]}' is not set.`));
+    console.log(chalk.yellow(`alloy: property '${property}' is not set.`));
   }
   process.exit();
 }
@@ -94,23 +98,72 @@ function getProperty(): void {
  * Sets the value of the given property.
  */
 function setProperty(): void {
+  let property: string = commander.args[0];
+  let value: string = commander.args[1];
+
   // Show usage if there no property or value was specified.
-  if (commander.args.length < 2 || typeof commander.args[0] !== "string"
-      || typeof commander.args[1] !== "string") {
+  if (commander.args.length < 2 || typeof property !== "string"
+      || typeof value !== "string") {
     commander.help();
   }
   // Make sure Alloy is configured.
   let config: Config = getConfig();
 
   // Check that the specified property is valid.
-  checkProperty(commander.args[0]);
+  checkProperty(property);
 
-  config.setProperty(commander.args[0], commander.args[1]);
+  if (Properties.isString(property)) {
+    config.setString(property, value);
+  } else if (Properties.isList(property)) {
+    try {
+      config.setList(property, JSON.parse(value));
+    } catch (e) {
+      console.error(chalk.red(`alloy: "${value}" is not a valid JSON array.`))
+      process.exit();
+    }
+  }
+
   try {
     config.write();
     console.log(chalk.yellow(
-        "Alloy configuration property set:\n" + commander.args[0],
-        "=", commander.args[1]));
+        "Alloy configuration property set:\n" + property,
+        "=", value));
+  } catch (e) {
+    console.error(e.toString());
+    console.error(chalk.red("alloy: error writing Alloy configuration."));
+  }
+  process.exit();
+}
+
+/**
+ * Adds a value to the given list property.
+ */
+function addProperty(): void {
+  let property: string = commander.args[0];
+  let value: string = commander.args[1];
+
+  // Show usage if there no property or value was specified.
+  if (commander.args.length < 2 || typeof property !== "string"
+      || typeof value !== "string") {
+    commander.help();
+  }
+  // Make sure Alloy is configured.
+  let config: Config = getConfig();
+
+  // Check that the specified property is valid and is a list.
+  try {
+    Properties.validateList(property);
+  } catch (e) {
+    console.error(chalk.red("alloy: " + e.message));
+    process.exit();
+  }
+
+  config.add(property, value);
+  try {
+    config.write();
+    console.log(chalk.yellow(
+        "Alloy configuration property updated:\n" + property,
+        "=", JSON.stringify(config.getList(property), null, 2)));
   } catch (e) {
     console.error(e.toString());
     console.error(chalk.red("alloy: error writing Alloy configuration."));
@@ -122,28 +175,29 @@ function setProperty(): void {
  * Deletes the given property.
  */
 function deleteProperty(): void {
+  let property: string = commander.args[0];
+
   // Show usage if there no property was specified.
-  if (!commander.args.length || typeof commander.args[0] !== "string") {
+  if (!commander.args.length || typeof property !== "string") {
     commander.help();
   }
   // Make sure Alloy is configured.
   let config: Config = getConfig();
 
   // Check that the specified property is valid.
-  checkProperty(commander.args[0]);
+  checkProperty(property);
 
-  if (!config.isPropertyConfigured(commander.args[0])) {
-    console.error(
-        chalk.yellow(`alloy: property '${commander.args[0]}' is not set.`));
+  if (!config.isConfigured(property)) {
+    console.error(chalk.yellow(`alloy: property '${property}' is not set.`));
     process.exit();
   }
 
-  let value = config.getProperty(commander.args[0]);
-  config.deleteProperty(commander.args[0]);
+  let value = config.getConfig()[property];
+  config.delete(property);
   try {
     config.write();
-    console.log(
-      chalk.yellow("Deleted property:", commander.args[0], "=", value));
+    console.log(chalk.yellow(
+        "Deleted property:", property, "=", JSON.stringify(value, null, 2)));
   } catch (e) {
     console.error(e.toString());
     console.error(chalk.red("alloy: error writing Alloy configuration."));
@@ -157,7 +211,7 @@ function deleteProperty(): void {
  */
 function getConfig(): Config {
   try {
-    return new Config().read(process.cwd());
+    return new Config(process.cwd()).read();
   } catch (e) {
     if (e.errno === -2) {
       console.error(chalk.red(
@@ -177,7 +231,7 @@ function getConfig(): Config {
  */
 function checkProperty(property: string): void {
   try {
-    Config.checkValidProperty(property);
+    Properties.validate(property);
   } catch (e) {
     console.error(chalk.red("alloy: " + e.message));
     process.exit();

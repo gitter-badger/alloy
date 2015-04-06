@@ -1,4 +1,4 @@
-import { CONFIG_PATH } from "../lib/constants";
+import { Config } from "../lib/config";
 import { chalk, commander, fs } from "../../vendor/npm";
 
 /**
@@ -25,24 +25,22 @@ if (commander.args.length) {
   process.exit();
 }
 
+let config: Config;
 try {
-  fs.statSync(CONFIG_PATH);
-  console.error(chalk.red("alloy: Alloy configuration already exists."));
-  process.exit();
+  config = new Config(process.cwd()).create();
 } catch (e) {
-  if (e.errno !== -2) {
-    // Got a stat error other than ENOENT (file not found).
+  if (e.hasOwnProperty("errno")) {
     console.error(e.toString());
     console.error(chalk.red("alloy: init failed due to stat error."));
-    process.exit();
+  } else {
+    console.error(chalk.red("alloy: " + e.message));
   }
+  process.exit();
 }
 
 // TODO(joeloyj): Add interactive configuration.
-let config: Object = {};
-
 try {
-  fs.writeFileSync(CONFIG_PATH, JSON.stringify(config));
+  config.write();
   console.info(chalk.yellow("Created Alloy configuration."));
 } catch (e) {
   console.error(e.toString());

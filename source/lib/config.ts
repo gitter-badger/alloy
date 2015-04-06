@@ -1,7 +1,7 @@
+import { Properties } from "../lib/properties";
 import { chalk, fs, path } from "../../vendor/npm";
 
 const CONFIG_FILENAME = ".alloy";
-const CONFIG_PROPERTIES = ["paths", "exclude"];
 
 /**
  * Encapsulates functionality for reading and writing to an Alloy
@@ -12,48 +12,30 @@ const CONFIG_PROPERTIES = ["paths", "exclude"];
  */
 export class Config {
   // Alloy configuration parsed from the config file.
+  // TODO(joeloyj): Use a map instead and convert to JSON when writing to disk.
   private config: Object;
   private configPath: string;
 
-  /**
-   * Returns true if there is an Alloy configuration for the given directory.
-   */
-  public static hasConfig(directory: string): boolean {
-    // TODO(joeloyj): Check all parent directories for config file.
-    try {
-      fs.statSync(path.join(directory, CONFIG_FILENAME));
-      return true;
-    } catch (e) {
-      if (e.errno === -2) {
-        return false;
-      }
-      throw e;
-    }
-  }
+  constructor(private directory: string) {}
 
   /**
-   * Checks if the given value is a valid Alloy configuration property,
-   * otherwise throws an error.
+   * Creates an alloy config for the current directory.
    */
-  public static checkValidProperty(property: string) {
-    if (!this.isValidProperty(property)) {
-      throw new Error(property + " is not a valid configuration property.");
+  public create(): Config {
+    if (Config.hasConfig(this.directory)) {
+      throw new Error("Alloy configuration already exists.");
     }
-  }
-
-  /**
-   * Returns true if the given value is a valid Alloy configuration property.
-   */
-  public static isValidProperty(property: string): boolean {
-    return CONFIG_PROPERTIES.indexOf(property) >= 0;
+    this.config = {};
+    this.configPath = path.join(this.directory, CONFIG_FILENAME);
+    return this;
   }
 
   /**
    * Finds the .alloy config file and retrieves the current configuration.
    */
-  public read(directory: string): Config {
+  public read(): Config {
     // TODO(joeloyj): Check all parent directories for config file.
-    this.configPath = path.join(directory, CONFIG_FILENAME);
+    this.configPath = path.join(this.directory, CONFIG_FILENAME);
     this.config = JSON.parse(
         fs.readFileSync(this.configPath, { encoding: "utf8" }));
     return this;
@@ -71,35 +53,99 @@ export class Config {
   }
 
   /**
+   * Return the list of paths watched by this Alloy configuration.
+   */
+  public getPaths(): string[] {
+    if (this.isConfigured(Properties.PATHS)) {
+      return this.getList(Properties.PATHS);
+    } else {
+      return [];
+    }
+  }
+
+  /**
    * Returns true if a value has been set for the given property.
    */
-  public isPropertyConfigured(property: string): boolean {
-    Config.checkValidProperty(property);
+  public isConfigured(property: string): boolean {
+    Properties.validate(property);
     return this.config.hasOwnProperty(property);
   }
 
   /**
-   * Returns the value of the given property.
+   * Returns the value of the given string property.
    */
-  public getProperty(property: string): string {
-    Config.checkValidProperty(property);
+  public getString(property: string): string {
+    Properties.validateString(property);
     return this.config[property];
   }
 
   /**
-   * Sets a property to a given value.
+   * Returns the value of the given property that is configured as a
+   * list of strings.
    */
-  public setProperty(property: string, value: string): Config {
-    Config.checkValidProperty(property);
+  public getList(property: string): string[] {
+    Properties.validateList(property);
+
+    return this.config[property];
+  }
+
+  /**
+   * Sets a property to the given string value.
+   */
+  public setString(property: string, value: string): Config {
+    Properties.validateString(property);
+    if (!this.config) {
+      this.config = {};
+    }
     this.config[property] = value;
+    return this;
+  }
+
+  /**
+   * Sets a list property to the given array of strings.
+   */
+  public setList(property: string, value: string[]): Config {
+    Properties.validateList(property);
+    if (!this.config) {
+      this.config = {};
+    }
+    this.config[property] = value;
+    return this;
+  }
+
+  /**
+   * Returns true the given list property contains the specified value.
+   */
+  public contains(property: string, value: string): boolean {
+    Properties.validateList(property);
+    if (!this.config || !this.config.hasOwnProperty(property)) {
+      return false;
+    }
+    return this.config[property].indexOf(value) >= 0;
+  }
+
+  /**
+   * Adds a string value to the given list property.
+   */
+  public add(property: string, value: string): Config {
+    Properties.validateList(property);
+    if (!this.config) {
+      this.config = {};
+    }
+    if (!this.config.hasOwnProperty(property)) {
+      this.config[property] = [];
+    }
+    if (!this.contains(property, value)) {
+      this.config[property].push(value);
+    }
     return this;
   }
 
   /**
    * Deletes the given property.
    */
-  public deleteProperty(property: string): Config {
-    Config.checkValidProperty(property);
+  public delete(property: string): Config {
+    Properties.validate(property);
     if (this.config.hasOwnProperty(property)) {
       delete this.config[property];
     }
@@ -118,5 +164,21 @@ export class Config {
    */
   public toString(): string {
     return JSON.stringify(this.config, null, 2);
+  }
+
+  /**
+   * Returns true if there is an Alloy configuration for the given directory.
+   */
+  public static hasConfig(directory: string): boolean {
+    // TODO(joeloyj): Check all parent directories for config file.
+    try {
+      fs.statSync(path.join(directory, CONFIG_FILENAME));
+      return true;
+    } catch (e) {
+      if (e.errno === -2) {
+        return false;
+      }
+      throw e;
+    }
   }
 }
