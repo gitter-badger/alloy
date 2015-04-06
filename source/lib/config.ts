@@ -64,6 +64,17 @@ export class Config {
   }
 
   /**
+   * Return the list of paths excluded from this Alloy configuration.
+   */
+  public getExcluded(): string[] {
+    if (this.isConfigured(Properties.EXCLUDE)) {
+      return this.getList(Properties.EXCLUDE);
+    } else {
+      return [];
+    }
+  }
+
+  /**
    * Returns true if a value has been set for the given property.
    */
   public isConfigured(property: string): boolean {
