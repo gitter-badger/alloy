@@ -30,10 +30,11 @@ export default class BuildWatcher {
   public watch(paths: string[], cwd: string): void {
     if (!this.isInitialized) {
       this.initialize(paths, cwd);
+      return;
     }
 
     for (let p of paths) {
-      let resolvedPath: string = this.resolvePath(p, cwd);
+      let resolvedPath: string = this.resolvePath(cwd, p);
       if (this.watchList.has(resolvedPath)) {
         console.info("Rewatching path: ", resolvedPath);
       } else {
@@ -55,7 +56,7 @@ export default class BuildWatcher {
     }
 
     for (let p of paths) {
-      let resolvedPath: string = this.resolvePath(p, cwd);
+      let resolvedPath: string = this.resolvePath(cwd, p);
       this.watchList.delete(resolvedPath);
       console.info("Unwatching path: ", resolvedPath);
     }
@@ -96,7 +97,7 @@ export default class BuildWatcher {
         .on("error", this.onError.bind(this))
         .on("all", this.onChange.bind(this));
 
-    paths = paths.map((p: string): string => this.resolvePath(p, cwd));
+    paths = paths.map((p: string): string => this.resolvePath(cwd, p));
     for (let p of paths) {
       if (!this.watchList.has(p)) {
         console.info("Watching path: ", p);
@@ -131,7 +132,7 @@ export default class BuildWatcher {
     console.error(chalk.red("Watcher error: ", error));
   }
 
-  private resolvePath(pathSpec: string, cwd: string): string {
-    return cwd ? path.resolve(pathSpec, cwd) : pathSpec;
+  private resolvePath(cwd: string, pathSpec: string): string {
+    return cwd ? path.resolve(cwd, pathSpec) : pathSpec;
   }
 }
