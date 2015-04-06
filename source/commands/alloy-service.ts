@@ -1,8 +1,8 @@
 import { Process } from "types";
-import { chalk, commander } from "../vendor/npm";
-import { lookupService } from "./service/utils";
-import Client from "./service/client";
-import Server from "./service/server";
+import { chalk, commander } from "../../vendor/npm";
+import { lookupService } from "../service/utils";
+import Client from "../service/client";
+import Server from "../service/server";
 
 /**
  * alloy-service.js
@@ -14,30 +14,36 @@ import Server from "./service/server";
  * @copyright 2015 Google Inc
  */
 
+const description: string = "Utility for interacting with Alloy service. "
+    + "Starts the service by default.";
+const commands: string[] = ["start", "stop"];
+
+commander.description(description);
+
 commander
-    .command("start [pathspec...]")
-    .description(`Starts Alloy service and optionally watches files
-                     given by [pathspec...].
-`)
+    .command("start")
+    .description("start Alloy service (default)")
     .action(start);
 
 commander
     .command("stop")
-    .description("Stops Alloy service.")
+    .description("stop Alloy service")
     .action(stop);
 
 commander.parse(process.argv);
 
-// Output help if no command was provided.
-if (!process.argv.slice(2).length) {
-  commander.help();
-}
-
 // Show error message if command was not recognized.
-if (process.argv[2] !== "start" && process.argv[2] !== "stop") {
-  console.error("alloy: '" + process.argv[2] + "' is not an alloy-service " +
+if (commander.args.length
+    && typeof commander.args[0] === "string"
+    && commands.indexOf(commander.args[0]) === -1) {
+  console.error("alloy: '" + commander.args[0] + "' is not an alloy-service " +
       "command. See 'alloy service --help'.");
   process.exit();
+}
+
+// Default to start if no command was provided.
+if (!process.argv.slice(2).length) {
+  start();
 }
 
 /**
@@ -48,17 +54,12 @@ function start(): void {
   // running instance.
   lookupService((results: Process[]): void => {
     if (results.length > 1) {
-      console.error(chalk.red("Alloy service is already running.",
-          "\nUse \"alloy watch [pathspec..]\" instead."));
+      console.error(chalk.red("Alloy service is already running."));
       return;
     }
 
     // Start Alloy service and watch any given paths.
     new Server().start();
-    let args = process.argv.slice(3);
-    if (args.length) {
-      new Client().watch(args, () => {});
-    }
   });
 }
 
@@ -75,5 +76,5 @@ function stop(): void {
 
     // Send stop message to Alloy service.
     new Client().stop();
-});
+  });
 }

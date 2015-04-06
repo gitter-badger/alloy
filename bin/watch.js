@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-require("../build/source/alloy-watch.js")
+require("../build/source/commands/alloy-watch.js")

@@ -1,7 +1,7 @@
 import { Process } from "types";
-import { chalk, child_process, commander } from "../vendor/npm";
-import { lookupService } from "./service/utils";
-import Client from "./service/client";
+import { chalk, child_process, commander } from "../../vendor/npm";
+import { lookupService } from "../service/utils";
+import Client from "../service/client";
 
 /**
  * alloy-watch.js
@@ -23,7 +23,7 @@ const description =
 
 commander
     .usage("alloy-watch [pathspec...]")
-    .description(description)
+    // .description(description)
     .parse(process.argv);
 
 let paths: string[] = commander.args;
@@ -32,14 +32,16 @@ if (paths.length === 0) {
   paths.push(process.cwd());
 }
 
+console.error(chalk.red("Not implemented."));
+
+/*
 // Connect to Alloy service or start it if it is not already running.
 lookupService((results: Process[]): void => {
   // Start Alloy service if it is not running yet.
   if (results.length === 0) {
     console.info(
         chalk.yellow("Alloy service is not running, starting service..."));
-    child_process.fork("./build/source/alloy-service",
-        ["start"].concat(commander.args));
+    child_process.fork("./build/source/commands/alloy-service", commander.args);
     return;
   }
 
@@ -52,3 +54,4 @@ lookupService((results: Process[]): void => {
   // Send message to existing Alloy service to watch the given paths.
   new Client().watch(paths, () => process.exit());
 });
+*/
