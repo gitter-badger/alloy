@@ -5,13 +5,18 @@ Tokens.ts
 Created by Chris Prucha
 © 2015 Notion Labs, Inc
 
-Provide declarative tokens for the lexer to analyze.
+Interfaces for token matching.
 
 */
 
-export interface Tokens {
+export interface MatchTokens {
 	names            : string[];
 	operators        : string[];
 	token_delimiters : string[];
 	string_delimiters: string[];
+}
+
+export interface Token {
+	type: string;
+	value: string;
 }

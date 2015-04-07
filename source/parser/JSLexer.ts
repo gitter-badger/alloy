@@ -1,4 +1,4 @@
-import { Tokens } from "./Tokens";
+import { MatchTokens, Token } from "./Tokens";
 import { Lexer } from "./Lexer";
 
 /*
@@ -12,45 +12,26 @@ Provide declarative tokens for the lexer to analyze.
 
 */
 
-/*
-
-Interfaces
-
-*/
-
-interface Token {
-	[index: string]: string
-}
-
-/*
-
-Implementation
-
-*/
-
 export class JSLexer implements Lexer {
 
-	// Properties
-	private prefixOperators : string = "<>+-&";
-	private postfixOperators: string = "=>&:";
-
 	// Inject tokens on creation
-	constructor(private tokens: Tokens) {}
+	constructor(private tokens: MatchTokens) {}
 
 	// Public
-	public generateTokens(inputString: string) {
+	public generateTokens(code: string):Token[] {
 		let partialToken: string   = "";
 		let inName: boolean        = false;
 		let inString: boolean      = false;
-		let outputTokens: string[] = [];
+		let outputTokens: Token[]  = [];
 
-		for (let character of inputString) {
+		for (let character of code) {
 			partialToken += character;
 
 			if (!inString && this.isTokenDelimiter(character)) {
 
-				if (partialToken.length > 1) {
-					outputTokens.push(partialToken)
+				if (inName && partialToken.length > 1) {
+					outputTokens.push(this.createToken("name", partialToken));
+					inName = false;
 				}
 
 				// Reset partial token and continue
@@ -58,7 +39,7 @@ export class JSLexer implements Lexer {
 				continue
 
 			} else if (!inString && this.useToken(partialToken)) {
-				outputTokens.push(partialToken);
+				outputTokens.push(this.createToken("name", partialToken));
 				partialToken = "";
 				continue
 
@@ -73,7 +54,7 @@ export class JSLexer implements Lexer {
 					inString = true;
 
 				} else {
-					outputTokens.push(partialToken);
+					outputTokens.push(this.createToken("string", partialToken));
 					inString = false;
 					partialToken = "";
 				}
@@ -102,7 +83,11 @@ export class JSLexer implements Lexer {
 	}
 
 	private useToken(partialToken: string): boolean {
-		for (let tokens of [this.tokens.names, this.tokens.operators]) {
+		let tokenTypes:any[] = [this.tokens.names, this.tokens.operators];
+		let tokenTypeIndex:number = 0;
+
+		for (let tokens of tokenTypes) {
+			tokenTypeIndex += 1;
 			for (let matchToken of tokens) {
 				if (partialToken === matchToken) {
 					return true
@@ -126,13 +111,11 @@ export class JSLexer implements Lexer {
 		return !!parseInt(partialToken, 10)
 	}
 
-	private createToken(tokenString: string): Token {
+	private createToken(type: string, value: string):Token {
 		return {
-			"type" : "",
-			"value": tokenString,
-			"from" : "",
-			"to"   : ""
-		}
+			"type" : type,
+			"value": value
+		};
 	}
 
 }

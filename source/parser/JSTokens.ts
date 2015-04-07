@@ -1,4 +1,4 @@
-import { Tokens } from "./Tokens"
+import { MatchTokens } from "./Tokens"
 
 /*
 
@@ -31,7 +31,7 @@ ES6 RC3 Module System Examples:
 
 */
 
-export const JSTokens: Tokens = {
+export const JSTokens: MatchTokens = {
 	"names" : [
 		"export",
 		"import",

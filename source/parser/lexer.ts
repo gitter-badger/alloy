@@ -9,6 +9,8 @@ Provide declarative tokens for the lexer to analyze.
 
 */
 
+import { Token } from "./Tokens"
+
 export interface Lexer {
-	generateTokens(code: string): string[];
+	generateTokens(code: string): Token[];
 }
