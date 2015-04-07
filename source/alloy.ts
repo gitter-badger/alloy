@@ -54,4 +54,4 @@ if (commander.args.length && commands.indexOf(commander.args[0]) === -1) {
 }
 
 // Route commands to modules
-// commander.selftest && selftest();
+commander.selftest && selftest();
