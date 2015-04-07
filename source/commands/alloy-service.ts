@@ -1,7 +1,7 @@
 import { Process } from "types";
 import { chalk, commander } from "../../vendor/npm";
-import Client from "../service/client";
-import Server from "../service/server";
+import Client from "../service/Client";
+import Server from "../service/Server";
 import ServiceUtils from "../service/ServiceUtils";
 
 /**

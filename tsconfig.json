@@ -27,12 +27,15 @@
         "./source/parser/lexer.ts",
         "./source/parser/tokens.ts",
         "./source/service/BuildWatcher.ts",
+        "./source/service/Client.ts",
+        "./source/service/Server.ts",
         "./source/service/ServiceUtils.ts",
-        "./source/service/client.ts",
-        "./source/service/server.ts",
         "./source/tests/selftest.ts",
         "./typings/chalk/chalk.d.ts",
+        "./typings/chokidar/chokidar.d.ts",
         "./typings/commander/commander.d.ts",
+        "./typings/lodash/lodash.d.ts",
+        "./typings/node/node.d.ts",
         "./typings/tsd.d.ts",
         "./vendor/npm.ts"
     ]
