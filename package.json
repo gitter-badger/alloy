@@ -4,15 +4,16 @@
   "description": "A Polyglot (any language) HTML Imports-based Module System for Web Components ",
   "main": "bin/alloy-shell.js",
   "bin": {
-    "alloy": "bin/alloy-shell.js",
-    "alloy-build": "bin/build.js",
+    "[]"          : "bin/alloy-shell.js",
+    "alloy"       : "bin/alloy-shell.js",
+    "alloy-build" : "bin/build.js",
     "alloy-config": "bin/config.js",
-    "alloy-init": "bin/init.js",
-    "alloy-start": "bin/start.js",
+    "alloy-init"  : "bin/init.js",
+    "alloy-start" : "bin/start.js",
     "alloy-status": "bin/status.js",
-    "alloy-stop": "bin/stop.js",
-    "alloy-trace": "bin/trace.js",
-    "alloy-watch": "bin/watch.js"
+    "alloy-stop"  : "bin/stop.js",
+    "alloy-trace" : "bin/trace.js",
+    "alloy-watch" : "bin/watch.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
