@@ -3,7 +3,7 @@ import { Lexer } from "./Lexer";
 
 /*
 
-lexer.ts
+JSLexer.ts
 
 Created by Chris Prucha
 © 2015 Notion Labs, Inc
@@ -31,49 +31,69 @@ Implementation
 export class JSLexer implements Lexer {
 
 	// Properties
-
-	private prefixOperators : string = "<>+-&"
-	private postfixOperators: string = "=>&:"
+	private prefixOperators : string = "<>+-&";
+	private postfixOperators: string = "=>&:";
 
 	// Inject tokens on creation
-
 	constructor(private tokens: Tokens) {}
 
 	// Public
-
 	public generateTokens(inputString: string) {
-		let partialToken: string   = ""
-		let outputTokens: string[] = []
+		let partialToken: string   = "";
+		let inName: boolean        = false;
+		let inString: boolean      = false;
+		let outputTokens: string[] = [];
 
 		for (let character of inputString) {
-			partialToken += character
+			partialToken += character;
 
-			if (this.ignoreToken(partialToken)) {
+			if (!inString && this.isTokenDelimiter(character)) {
 
-				// Reset token and continue
-				console.log(`ignored: ${partialToken}`)
-				partialToken = ""
+				if (partialToken.length > 1) {
+					outputTokens.push(partialToken)
+				}
+
+				// Reset partial token and continue
+				partialToken = "";
 				continue
-			}
 
-			if (this.useToken(partialToken)) {
-
-				// Moo
-				console.log(`matched: ${partialToken}`)
-				partialToken = ""
+			} else if (!inString && this.useToken(partialToken)) {
+				outputTokens.push(partialToken);
+				partialToken = "";
 				continue
+
+			} else if (!inString && this.isNumber(partialToken)) {
+
+				// Don't support numbers
+				throw new Error(`Unexpected token [number]: ${partialToken};`);
+
+			} else if (this.isStringDelimiter(character)) {
+
+				if (!inString) {
+					inString = true;
+
+				} else {
+					outputTokens.push(partialToken);
+					inString = false;
+					partialToken = "";
+				}
+				continue
+
+			} else if (!inString) {
+
+				// Assume name
+				inName = true;
 			}
 
 		}
 
-		return []
+		return outputTokens;
 
 	}
 
 	// Helpers
-
-	private ignoreToken(partialToken: string) {
-		for (let ignoredToken of this.tokens.ignore) {
+	private isTokenDelimiter(partialToken: string) {
+		for (let ignoredToken of this.tokens.token_delimiters) {
 			if (partialToken === ignoredToken) {
 				return true
 			}
@@ -92,10 +112,24 @@ export class JSLexer implements Lexer {
 		return false
 	}
 
-	private createToken(string: string): Token {
+	private isStringDelimiter(partialToken: string): boolean {
+		for (let delimiter of this.tokens.string_delimiters) {
+			if (partialToken === delimiter) {
+				return true
+			}
+		}
+		return false
+
+	}
+
+	private isNumber(partialToken: string): boolean {
+		return !!parseInt(partialToken, 10)
+	}
+
+	private createToken(tokenString: string): Token {
 		return {
 			"type" : "",
-			"value": "",
+			"value": tokenString,
 			"from" : "",
 			"to"   : ""
 		}

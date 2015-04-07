@@ -32,7 +32,6 @@ ES6 RC3 Module System Examples:
 */
 
 export const JSTokens: Tokens = {
-	"ignore": [" "],
 	"names" : [
 		"export",
 		"import",
@@ -47,9 +46,10 @@ export const JSTokens: Tokens = {
 		",",
 		";"
 	],
+	"token_delimiters": [" "],
 	"string_delimiters": [
 		"`",
 		"'",
 		"\""
 	]
-}
+};

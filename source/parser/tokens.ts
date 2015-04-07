@@ -10,8 +10,8 @@ Provide declarative tokens for the lexer to analyze.
 */
 
 export interface Tokens {
-	ignore           : string[];
 	names            : string[];
 	operators        : string[];
+	token_delimiters : string[];
 	string_delimiters: string[];
 }
