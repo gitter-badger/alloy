@@ -1,49 +1,42 @@
 # Alloy
-A Polyglot (any language) HTML Imports-based Module System for Web Components that Builds Instantly.
+ES6 modules, fast incremental (delta) builds, and no configuration for any compile-to JS language or HTML.
 
-## Alloy's Five Principles
-* Simple
-* Instant (really, really fast)
-* Polyglot (any language)
-* Optimized for massive Web Component projects
-* Free and Open Source (MIT License)
+## Alloy's Principles
+In general, we want to be the Git of JavaScript build systems: fast, simple, useful, and reliable.
+* Simple (stateless cli, no BS; like Git)
+* Instant (really, really fast; like Git)
+* Polyglot (any language; like Git)
+* Optimized for massive projects (like Git)
+* Free and Open Source (MIT License) (better than Git :) )
 
 ## How does Alloy compare with other Build Systems?
 - Gulp, Brunch, Grunt, and other build systems are too slow, difficult to setup, and generally not optimizable for Web Component projects.
 - Vulcanize (polymer) is not fast enough for development, requires the use of html import syntax (combining HTML with script), and doesn't work well with other compiled languages (TypeScript, ES6, Coffeescript, etc).
-
-## Design Documentation
-[Alloy Design Document (draft)](https://www.makenotion.com/ElV9Qe54jjs81)
+	- Alloy can use Vulcanize for final production builds (minification, etc).
 
 
 ## Using Alloy
 #### Getting Started
 ** Note: Alloy is not yet released and has limited functionality. **
-- To install Alloy from the root of the repo:
+- To build and install Alloy from the root of the repo:
 ``$ npm install -g``
-- To use Alloy `$ alloy some_command`
+- To use Alloy `$ alloy [command]`
 
 #### API
 [Alloy API Design Document (draft)](https://www.makenotion.com/IuozGZXxcVGZG)
 
 ## Building Alloy
 
-Alloy is a tiny application written in ES6 with TypeScript type annotations and interfaces, it only requires a simple transpile by the [TypeScript compiler](https://github.com/microsoft/typescript) to find type errors and completely build the project.
+Alloy is a tiny application written in ES6 with TypeScript type annotations and interfaces, it only requires compilation by the [TypeScript compiler](https://github.com/microsoft/typescript) to find any errors and completely build the project.
 
 
 ##### Pre-requirements
-- Install TypeScript v.1.5.0 or higher (not on NPM yet)
-	1. [Clone and build TypeScript 1.5.0 or higher](https://github.com/Microsoft/typescript)
-	2. Install tsc globally by runnign `$ npm install -g` from the TypeScript directory root.
-	3. Check that TypeScript is now v.1.5.0+ by doing `$ tsc -v`.
-
-
-- Install the TypeScript Definitions manager for DefinitelyTyped.
-	1. `$ npm install -g tsd`
+1. Install TypeScript v.1.5.0-alpha or higher: `$ npm install -g typescript`
+2. Install the TypeScript Definitions manager for DefinitelyTyped: `$ npm install -g tsd`
 
 ##### Compiling
 
-**It's highly recommended that you use the [Atom TypeStrong](https://atom.io/packages/atom-typescript) package for TypeScript or Visual Studio 2013+ to automatically build and find type errors!**
+**It's highly recommended that you use the [Atom TypeStrong](https://atom.io/packages/atom-typescript) package for TypeScript or Visual Studio 2013+ to automatically build Alloy and find type errors!**
 
 - Building Alloy Manually
   - To build once (with sourcemaps)
