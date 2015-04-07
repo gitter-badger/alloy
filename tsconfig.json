@@ -6,7 +6,7 @@
     },
     "filesGlob": [
         "./**/*.ts",
-        "!./node_modules/**/.ts"
+        "!./node_modules/**/*.ts"
     ],
     "files": [
         "./source/alloy.ts",
@@ -23,8 +23,10 @@
         "./source/lib/constants.ts",
         "./source/lib/properties.ts",
         "./source/lib/types.ts",
-        "./source/parser/lexer.ts",
-        "./source/parser/tokens.ts",
+        "./source/parser/JSLexer.ts",
+        "./source/parser/JSTokens.ts",
+        "./source/parser/Lexer.ts",
+        "./source/parser/Tokens.ts",
         "./source/service/build_watcher.ts",
         "./source/service/client.ts",
         "./source/service/server.ts",
