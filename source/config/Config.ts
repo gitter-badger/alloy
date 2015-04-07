@@ -1,5 +1,5 @@
 import { chalk, fs, path } from "../../vendor/npm";
-import Properties from "../lib/properties";
+import Properties from "../config/Properties";
 
 const CONFIG_FILENAME = ".alloy";
 

@@ -1,7 +1,7 @@
 import { Process } from "types";
 import { chalk, commander } from "../../vendor/npm";
-import { lookupService } from "../service/utils";
 import Client from "../service/client";
+import ServiceUtils from "../service/ServiceUtils";
 
 /**
  * alloy-stop.js
@@ -27,7 +27,7 @@ if (commander.args.length) {
 }
 
 // Lookup the Alloy service to see if it's running.
-lookupService((results: Process[]): void => {
+ServiceUtils.lookupService((results: Process[]): void => {
   if (results.length === 0) {
     console.error(chalk.red("Alloy service is not running."));
     return;

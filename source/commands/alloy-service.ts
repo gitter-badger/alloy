@@ -1,8 +1,8 @@
 import { Process } from "types";
 import { chalk, commander } from "../../vendor/npm";
-import { lookupService } from "../service/utils";
 import Client from "../service/client";
 import Server from "../service/server";
+import ServiceUtils from "../service/ServiceUtils";
 
 /**
  * alloy-service.js
@@ -52,7 +52,7 @@ if (!process.argv.slice(2).length) {
 function start(): void {
   // Before starting the service, check that there isn't already a
   // running instance.
-  lookupService((results: Process[]): void => {
+  ServiceUtils.lookupService((results: Process[]): void => {
     if (results.length > 1) {
       console.error(chalk.red("Alloy service is already running."));
       return;
@@ -68,7 +68,7 @@ function start(): void {
  */
 function stop(): void {
   // Lookup the Alloy service to see if it's running.
-  lookupService((results: Process[]): void => {
+  ServiceUtils.lookupService((results: Process[]): void => {
     if (results.length === 1) {
       console.error(chalk.red("Alloy service is not running."));
       return;

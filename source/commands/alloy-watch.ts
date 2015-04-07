@@ -1,7 +1,7 @@
 import { Process } from "types";
 import { chalk, child_process, commander } from "../../vendor/npm";
-import { lookupService } from "../service/utils";
 import Client from "../service/client";
+import ServiceUtils from "../service/ServiceUtils";
 
 /**
  * alloy-watch.js

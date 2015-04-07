@@ -12,7 +12,7 @@ Created by Chris Prucha
 */
 
 export let chalk         = require("chalk")
-export let child_process = require('child_process')
+export let child_process = require("child_process")
 export let chokidar      = require("chokidar")
 export let commander     = require("commander")
 export let fs            = require("fs")

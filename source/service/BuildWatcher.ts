@@ -1,7 +1,5 @@
 import { chalk, child_process, chokidar, path } from "../../vendor/npm";
-
-import _ =  require("lodash");
-import fs = require("fs");
+import { FSWatcher } from "fs";
 
 const BUILD_DEBOUNCE_MS = 50;
 
@@ -11,7 +9,7 @@ const BUILD_DEBOUNCE_MS = 50;
  * @author Joel Ong (joelo@google.com)
  */
 export default class BuildWatcher {
-  private watcher: fs.FSWatcher;
+  private watcher: FSWatcher;
   private watchList: Set<string>;
   private isInitialized: boolean;
   private debouncedBuild: () => void;

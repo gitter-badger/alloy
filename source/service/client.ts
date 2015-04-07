@@ -1,8 +1,6 @@
-import { SERVICE_ID } from "../lib/constants";
 import { WatchData } from "types";
 import { chalk, ipc } from "../../vendor/npm";
-
-import _ = require("lodash");
+import ServiceUtils from "../service/ServiceUtils";
 
 /**
  * Alloy service client. Uses unix sockets for IPC.
@@ -28,17 +26,17 @@ export default class Client {
    * files trigger automatic Alloy builds.
    */
   public watch(paths: string[], callback: () => void): void {
-    ipc.connectTo(SERVICE_ID, (): void => {
+    ipc.connectTo(ServiceUtils.SERVICE_ID, (): void => {
 
-      ipc.of[SERVICE_ID].on("connect", (): void => {
+      ipc.of[ServiceUtils.SERVICE_ID].on("connect", (): void => {
         let data: WatchData = {
           paths: paths,
           cwd: process.cwd()
         };
-        ipc.of[SERVICE_ID].emit("watch", data);
+        ipc.of[ServiceUtils.SERVICE_ID].emit("watch", data);
       });
 
-      ipc.of[SERVICE_ID].on("watched", (): void => {
+      ipc.of[ServiceUtils.SERVICE_ID].on("watched", (): void => {
         console.info(
             chalk.yellow("Alloy is now watching the following paths:", paths));
         callback();
@@ -50,14 +48,14 @@ export default class Client {
    * Stops Alloy service.
    */
   public stop(): void {
-    ipc.connectTo(SERVICE_ID, (): void => {
+    ipc.connectTo(ServiceUtils.SERVICE_ID, (): void => {
 
-      ipc.of[SERVICE_ID].on("connect", (): void => {
+      ipc.of[ServiceUtils.SERVICE_ID].on("connect", (): void => {
         console.info(chalk.yellow("Stopping Alloy service..."));
-        ipc.of[SERVICE_ID].emit("stop");
+        ipc.of[ServiceUtils.SERVICE_ID].emit("stop");
       });
 
-      ipc.of[SERVICE_ID].on("stopped", (): void => {
+      ipc.of[ServiceUtils.SERVICE_ID].on("stopped", (): void => {
         console.info(chalk.yellow("Alloy service stopped."));
         process.exit();
       });

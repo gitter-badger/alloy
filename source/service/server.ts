@@ -1,11 +1,9 @@
-import { SERVICE_ID } from "../lib/constants";
 import { WatchData } from "types";
 import { chalk, ipc } from "../../vendor/npm";
-import BuildWatcher from "./build_watcher";
-import Config from "../lib/config";
-import Properties from "../lib/properties";
-
-import _ = require("lodash");
+import BuildWatcher from "./BuildWatcher";
+import Config from "../config/Config";
+import Properties from "../config/Properties";
+import ServiceUtils from "../service/ServiceUtils";
 
 /**
  * Service for asynchronous task execution such as file watching and building,
@@ -30,7 +28,7 @@ export default class Server {
     _.extend(ipc.config, {
       appspace       : "alloy.",
       socketRoot     : "/tmp/",
-      id             : SERVICE_ID,
+      id             : ServiceUtils.SERVICE_ID,
       maxConnections : 100,
       retry          : 500,
       silent         : true

@@ -1,8 +1,7 @@
+import { FSWatcher } from "fs";
 import { Process } from "types";
 import { chalk, child_process, commander } from "../../vendor/npm";
-import { lookupService } from "../service/utils";
-
-import fs = require("fs")
+import ServiceUtils from "../service/ServiceUtils";
 
 /**
  * alloy-start.js
@@ -31,7 +30,7 @@ if (commander.args.length) {
 }
 
 // Start Alloy service if it is not running yet.
-lookupService((results: Process[]): void => {
+ServiceUtils.lookupService((results: Process[]): void => {
   if (results.length === 0) {
     if (commander.background) {
       console.info(chalk.yellow("Starting Alloy service in background..."));
