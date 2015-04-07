@@ -6,10 +6,9 @@ import { chalk } from "../../vendor/npm";
  */
 export class Properties {
   // Available properties.
-  public static BUILD_DIRECTORY: string = "build_directory";
+  public static BUILD_DIRECTORY: string = "out";
   public static EXCLUDE: string = "exclude";
   public static SOURCES: string = "sources";
-  public static VULCANIZE_OPTIONS: string = "vulcanize_options";
 
   // Property type information.
   public static LIST_PROPERTIES: string[] = [
@@ -17,8 +16,7 @@ export class Properties {
     Properties.SOURCES
   ];
   public static STRING_PROPERTIES: string[] = [
-    Properties.BUILD_DIRECTORY,
-    Properties.VULCANIZE_OPTIONS
+    Properties.BUILD_DIRECTORY
   ];
 
   /**
