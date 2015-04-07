@@ -1,12 +1,12 @@
 # Alloy
-ES6 modules, fast incremental (delta) builds, and no configuration for any compile-to JS language or HTML.
+Get the power of scripting back with ES6 modules, instant delta builds, sensible defaults, and no build scripts. Alloy is the anti-build system.
 
 ## Alloy's Principles
-In general, we want to be the Git of JavaScript build systems: fast, simple, useful, and reliable.
+In general, we want to be the Git of compile-to JavaScript build systems: fast, simple, useful, and reliable.
 * Simple (stateless cli, no BS; like Git)
-* Instant (really, really fast; like Git)
-* Polyglot (any language; like Git)
-* Optimized for massive projects (like Git)
+* Instant (really, really fast delta builds)
+* Polyglot (any language that targets the web or node)
+* Optimized for massive projects (works with thousands of files and hundreds of lines of code)
 * Free and Open Source (MIT License) (better than Git :) )
 
 ## How does Alloy compare with other Build Systems?
