@@ -1,3 +1,5 @@
+import { Config } from "../lib/config";
+import { Properties } from "../lib/properties";
 import { SERVICE_ID } from "../lib/constants";
 import { WatchData } from "types";
 import { chalk, ipc } from "../../vendor/npm";
@@ -24,6 +26,7 @@ export default class Server {
   start(): void {
     console.info(chalk.yellow("Starting Alloy service..."));
 
+    // IPC configuration.
     _.extend(ipc.config, {
       appspace       : "alloy.",
       socketRoot     : "/tmp/",
@@ -33,6 +36,7 @@ export default class Server {
       silent         : true
     });
 
+    // Configure IPC endpoints.
     ipc.serve((): void => {
       ipc.server.on("stop", (): void => this.stop());
       ipc.server.on("watch",
@@ -40,7 +44,25 @@ export default class Server {
       ipc.server.on("unwatch",
           (data: WatchData, socket): void => this.onUnwatch(data, socket));
     });
+
+    // Start IPC server.
     ipc.server.start();
+
+    // Load alloy config and start watching files.
+    try {
+      if (Config.hasConfig(process.cwd())) {
+        let config: Config = new Config(process.cwd()).read();
+        this.watcher.watch(config.getPaths(), process.cwd());
+        this.watcher.unwatch(config.getExcluded(), process.cwd());
+        if (config.isConfigured(Properties.BUILD_DIRECTORY)) {
+          this.watcher.unwatch(
+              [config.getString(Properties.BUILD_DIRECTORY)], process.cwd());
+        }
+      }
+    } catch (e) {
+      console.error(e.toString());
+      console.error(chalk.red("alloy: error reading Alloy configuration."));
+    }
   }
 
   /**
