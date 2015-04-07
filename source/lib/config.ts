@@ -56,8 +56,8 @@ export class Config {
    * Return the list of paths watched by this Alloy configuration.
    */
   public getPaths(): string[] {
-    if (this.isConfigured(Properties.PATHS)) {
-      return this.getList(Properties.PATHS);
+    if (this.isConfigured(Properties.SOURCES)) {
+      return this.getList(Properties.SOURCES);
     } else {
       return [];
     }

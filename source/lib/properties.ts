@@ -6,15 +6,20 @@ import { chalk } from "../../vendor/npm";
  */
 export class Properties {
   // Available properties.
+  public static BUILD_DIRECTORY: string = "build_directory";
   public static EXCLUDE: string = "exclude";
-  public static PATHS: string = "paths";
+  public static SOURCES: string = "sources";
+  public static VULCANIZE_OPTIONS: string = "vulcanize_options";
 
   // Property type information.
   public static LIST_PROPERTIES: string[] = [
     Properties.EXCLUDE,
-    Properties.PATHS
+    Properties.SOURCES
   ];
-  public static STRING_PROPERTIES: string[] = [];
+  public static STRING_PROPERTIES: string[] = [
+    Properties.BUILD_DIRECTORY,
+    Properties.VULCANIZE_OPTIONS
+  ];
 
   /**
    * Returns true if the given value is a valid Alloy configuration property.
