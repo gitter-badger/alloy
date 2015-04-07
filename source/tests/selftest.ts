@@ -1,8 +1,8 @@
-import { tokens } from "../parser/tokens"
-import { Lexer }  from "../parser/lexer"
+import { JSTokens } from "../parser/JSTokens"
+import { JSLexer }  from "../parser/JSLexer"
 
 export let selftest = ():void => {
 
   // Simple Lexer test
-  new Lexer(tokens).generateTokens(`import { Lexer } from "./parser/lexer"`)
+  new JSLexer(JSTokens).generateTokens(`import { Lexer } from "./parser/lexer"`)
 }

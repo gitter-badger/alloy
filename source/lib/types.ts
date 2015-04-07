@@ -2,9 +2,10 @@
  * Shared type definitions for Alloy.
  *
  * @author Joel Ong (joelo@google.com)
+ * @author Chris Prucha (chris@makenotion.com)
  */
-declare module "types" {
 
+declare module "types" {
   export interface WatchData {
     paths: string[];
     cwd: string;
