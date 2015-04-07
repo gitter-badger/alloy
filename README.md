@@ -6,13 +6,14 @@ In general, we want to be the Git of compile-to JavaScript build systems: fast, 
 * Simple (stateless cli, no BS; like Git)
 * Instant (really, really fast delta builds)
 * Polyglot (any language that targets the web or node)
+* Made with Web Components in mind
 * Optimized for massive projects (works with thousands of files and hundreds of lines of code)
 * Free and Open Source (MIT License) (better than Git :) )
 
 ## How does Alloy compare with other Build Systems?
 - Gulp, Brunch, Grunt, and other build systems are too slow, difficult to setup, and generally not optimizable for Web Component projects.
-- Vulcanize (polymer) is not fast enough for development, requires the use of html import syntax (combining HTML with script), and doesn't work well with other compiled languages (TypeScript, ES6, Coffeescript, etc).
-	- Alloy can use Vulcanize for final production builds (minification, etc).
+- Vulcanize (Polymer) is not fast enough for development, requires the use of HTML Import syntax (combining HTML with script), and doesn't work well with other compiled languages (TypeScript, ES6, Coffeescript, etc).
+- Alloy can use Vulcanize for final production builds (minification, etc).
 
 
 ## Using Alloy
