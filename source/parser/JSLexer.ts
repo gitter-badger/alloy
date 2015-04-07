@@ -53,14 +53,13 @@ export class JSLexer implements Lexer {
 
 					// Ignore token delimiters
 					partialToken = "";
-					continue
 
-				} else if (this.useToken(partialToken)) {
+				} else if (this.isMatchToken(partialToken)) {
 
 					// Output all declarative tokens
-					outputTokens.push(this.createToken("name", partialToken));
+					let tokenType = this.matchTokenType(partialToken);
+					outputTokens.push(this.createToken(tokenType, partialToken));
 					partialToken = "";
-					continue
 
 				} else if (this.isNumber(partialToken)) {
 
@@ -78,28 +77,48 @@ export class JSLexer implements Lexer {
 		return outputTokens;
 	}
 
-	// Token Generation
-
 	// Helpers
-	private useToken(partialToken: string): boolean {
-		let tokenTypes:any[] = [this.tokens.names, this.tokens.operators];
-		let tokenTypeIndex:number = 0;
+	private matchTokenType(partialToken: string): string {
+		let tokenTypes = this.tokenTypes(this.tokens);
+		let matchedIndex:number;
 
-		for (let tokens of tokenTypes) {
-			tokenTypeIndex += 1;
-			for (let matchToken of tokens) {
+		for (let index in tokenTypes) {
+			for (let matchToken of tokenTypes[index]) {
 				if (partialToken === matchToken) {
-					return true
+					matchedIndex = index;
+					break;
 				}
 			}
 		}
-		return false
+
+		if (matchedIndex) {
+			return ["name", "operator"][matchedIndex];
+		}
+
+		throw new Error(`No matched token type: ${partialToken}`);
 	}
 
-	private isTokenDelimiter(partialToken: string) {
+	private tokenTypes(tokens: MatchTokens): string[][] {
+		return [tokens.names, tokens.operators];
+	}
+
+	private isMatchToken(partialToken: string): boolean {
+		let tokenTypes = this.tokenTypes(this.tokens);
+
+		for (let tokens of tokenTypes) {
+			for (let matchToken of tokens) {
+				if (partialToken === matchToken) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private isTokenDelimiter(partialToken: string): boolean {
 		for (let ignoredToken of this.tokens.token_delimiters) {
 			if (partialToken === ignoredToken) {
-				return true
+				return true;
 			}
 		}
 		return false
@@ -108,21 +127,21 @@ export class JSLexer implements Lexer {
 	private isStringDelimiter(partialToken: string): boolean {
 		for (let delimiter of this.tokens.string_delimiters) {
 			if (partialToken === delimiter) {
-				return true
+				return true;
 			}
 		}
-		return false
+		return false;
 
 	}
 
 	private isNumber(partialToken: string): boolean {
-		return !!parseInt(partialToken, 10)
+		return !!parseInt(partialToken, 10);
 	}
 
-	private createToken(type: string, value: string):Token {
+	private createToken(tokenType: string, tokenValue: string):Token {
 		return {
-			"type" : type,
-			"value": value
+			"type" : tokenType,
+			"value": tokenValue
 		};
 	}
 
