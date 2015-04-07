@@ -40,6 +40,8 @@ Alloy is a tiny application written in ES6 with TypeScript type annotations and 
 **It's highly recommended that you use the [Atom TypeStrong](https://atom.io/packages/atom-typescript) package for TypeScript or Visual Studio 2013+ to automatically build Alloy and find type errors!**
 
 - Building Alloy Manually
+  - Install required type definitions from DefinitelyTyped in the root of the repo
+  - `$ tsd update`
   - To build once (with sourcemaps)
 	- `$ tsc --sourcemap`
   - Build and watch for changes (with sourcemaps)
