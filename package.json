@@ -36,5 +36,6 @@
     "ps-node": "0.0.3"
   },
   "devDependencies": {},
-  "preferGlobal": true
+  "preferGlobal": true,
+  "private": true
 }
