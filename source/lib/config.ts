@@ -1,5 +1,5 @@
-import { Properties } from "../lib/properties";
 import { chalk, fs, path } from "../../vendor/npm";
+import Properties from "../lib/properties";
 
 const CONFIG_FILENAME = ".alloy";
 
@@ -10,7 +10,7 @@ const CONFIG_FILENAME = ".alloy";
  * @author Joel Ong (joelo@google.com)
  * @copyright 2015 Google Inc
  */
-export class Config {
+export default class Config {
   // Alloy configuration parsed from the config file.
   // TODO(joeloyj): Use a map instead and convert to JSON when writing to disk.
   private config: Object;

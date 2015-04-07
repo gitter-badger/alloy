@@ -1,6 +1,6 @@
-import { Config } from "../lib/config";
-import { Properties } from "../lib/properties";
 import { chalk, commander, fs } from "../../vendor/npm";
+import Config from "../lib/config";
+import Properties from "../lib/properties";
 
 /**
  * alloy-config.js

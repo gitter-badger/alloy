@@ -4,7 +4,7 @@ import { chalk } from "../../vendor/npm";
  * Defines Alloy configuration properties and provides basic utilities for
  * working with them.
  */
-export class Properties {
+export default class Properties {
   // Available properties.
   public static BUILD_DIRECTORY: string = "out";
   public static EXCLUDE: string = "exclude";

@@ -1,9 +1,9 @@
-import { Config } from "../lib/config";
-import { Properties } from "../lib/properties";
 import { SERVICE_ID } from "../lib/constants";
 import { WatchData } from "types";
 import { chalk, ipc } from "../../vendor/npm";
 import BuildWatcher from "./build_watcher";
+import Config from "../lib/config";
+import Properties from "../lib/properties";
 
 import _ = require("lodash");
 
