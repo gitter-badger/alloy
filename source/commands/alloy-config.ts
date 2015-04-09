@@ -15,9 +15,9 @@ const description: string =
 `Utility for configuring Alloy. Displays all configured properties by default.
 
   Available properties:
-    sources   a list of paths to monitor for file changes for automatic building
-    exclude   a list of paths to exclude from automatic building
-    out       path of build output folder
+    src      a list of paths to monitor for file changes for automatic building
+    exclude  a list of paths to exclude from automatic building
+    out      path of build output folder
 
   All properties use JSON notation, and file paths can be specified in any form
   supported by anymatch. See https://github.com/es128/anymatch.`;
