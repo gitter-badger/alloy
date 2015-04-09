@@ -10,6 +10,7 @@
     ],
     "files": [
         "./source/alloy.ts",
+        "./source/api/Alloy.ts",
         "./source/commands/alloy-build.ts",
         "./source/commands/alloy-config.ts",
         "./source/commands/alloy-init.ts",

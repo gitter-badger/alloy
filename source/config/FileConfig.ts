@@ -13,6 +13,10 @@ export default class FileConfig extends Config {
   // Filename for Alloy configurations.
   public static FILENAME = ".alloy";
 
+  // Directory for which an .alloy config file should be loaded,
+  // or where one should be created if it doesn't exist yet.
+  private directory: string;
+
   // Path of the .alloy config file.
   private configPath: string;
 
@@ -20,7 +24,8 @@ export default class FileConfig extends Config {
    * @param directory the directory for which an .alloy config file should be
    *     loaded, or where one should be created if it doesn't exist yet.
    */
-  constructor(private directory: string) {
+  constructor(directory: string) {
+    this.directory = path.normalize(directory);
     super();
   }
 

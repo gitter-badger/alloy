@@ -1,9 +1,8 @@
 import { WatchData } from "types";
 import { chalk, ipc } from "../../vendor/npm";
 import * as _ from "lodash";
-import BuildWatcher from "./BuildWatcher";
-import Config from "../config/Config";
-import Properties from "../config/Properties";
+import Alloy from "../api/Alloy";
+import FileConfig from "../config/FileConfig";
 import ServiceUtils from "../service/ServiceUtils";
 
 
@@ -14,17 +13,30 @@ import ServiceUtils from "../service/ServiceUtils";
  * @author Joel Ong (joelo@google.com)
  */
 export default class Server {
-  private watcher: BuildWatcher;
-
-  constructor() {
-    this.watcher = new BuildWatcher();
-  }
+  private alloy: Alloy;
 
   /**
    * Start Alloy service.
    */
   start(): void {
     console.info(chalk.yellow("Starting Alloy service..."));
+
+    // Load alloy config and start watching files.
+    this.alloy = new Alloy({}, process.cwd());
+    let onError = (err) => {
+      console.error(err.toString());
+      console.error(chalk.red("alloy: error reading Alloy configuration."));
+    }
+    FileConfig.hasConfig(process.cwd()).then(
+      hasConfig => {
+        if (hasConfig) {
+          new FileConfig(process.cwd()).read().then(
+            config => {
+              this.alloy.reconfigure(config);
+              this.alloy.start();
+            }, onError);
+        }
+      }, onError);
 
     // IPC configuration.
     _.extend(ipc.config, {
@@ -47,42 +59,25 @@ export default class Server {
 
     // Start IPC server.
     ipc.server.start();
-
-    // TODO(joeloyj): Rewrite using new API.
-    // Load alloy config and start watching files.
-    // try {
-    //   if (Config.hasConfig(process.cwd())) {
-    //     let config: Config = new Config(process.cwd()).read();
-    //     this.watcher.watch(config.getPaths(), process.cwd());
-    //     this.watcher.unwatch(config.getExcluded(), process.cwd());
-    //     if (config.isConfigured(Properties.BUILD_DIRECTORY)) {
-    //       this.watcher.unwatch(
-    //           [config.getString(Properties.BUILD_DIRECTORY)], process.cwd());
-    //     }
-    //   }
-    // } catch (e) {
-    //   console.error(e.toString());
-    //   console.error(chalk.red("alloy: error reading Alloy configuration."));
-    // }
   }
 
   /**
    * Stop Alloy service.
    */
   stop(): void {
-    this.watcher.exit();
+    this.alloy.stop();
     ipc.server.broadcast("stopped");
     console.info(chalk.yellow("Alloy service stopped."));
     process.exit();
   }
 
   private onWatch(data: WatchData, socket): void {
-    this.watcher.watch(data.paths, data.cwd);
+    this.alloy.addSources(data.paths, data.cwd);
     ipc.server.emit(socket, "watched");
   }
 
   private onUnwatch(data: WatchData, socket): void {
-    this.watcher.unwatch(data.paths, data.cwd);
+    // TODO(joeloyj): Unwatch using Alloy#exclude.
     ipc.server.emit(socket, "unwatched");
   }
 }

@@ -30,9 +30,9 @@ export default class Config {
   }
 
   /**
-   * Return the list of paths watched by this Alloy configuration.
+   * Return the list of source paths watched by this Alloy configuration.
    */
-  public getPaths(): string[] {
+  public getSources(): string[] {
     if (this.isConfigured(Properties.SOURCES)) {
       return this.getList(Properties.SOURCES);
     } else {
