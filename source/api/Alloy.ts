@@ -17,7 +17,7 @@ export enum Status {
  * @author Joel Ong (joelo@google.com)
  */
 export default class Alloy {
-  private config: Object;
+  private config: Config;
   private cwd: string;
   private status: Status;
   private watcher: BuildWatcher;
@@ -67,12 +67,12 @@ export default class Alloy {
    * automatic builds as configured.
    */
   public start(): void {
-    if (!this.watcher) {
+    if (this.watcher === undefined) {
       this.watcher = new BuildWatcher();
     }
     this.status = Status.STARTED;
-    let sources: string[] = this.config[Properties.SOURCES];
-    let excluded: string[] = this.config[Properties.EXCLUDE];
+    let sources: string[] = this.config.getSources();
+    let excluded: string[] = this.config.getExcluded();
     // Watch source paths.
     if (sources.length > 0) {
       this.watcher.watch(sources, this.cwd);
@@ -82,9 +82,9 @@ export default class Alloy {
       this.watcher.unwatch(excluded, this.cwd);
     }
     // Exclude build output directory from watched sources.
-    if (this.config.hasOwnProperty(Properties.BUILD_DIRECTORY)) {
+    if (this.config.isConfigured(Properties.BUILD_DIRECTORY)) {
       this.watcher.unwatch(
-          [this.config[Properties.BUILD_DIRECTORY]], this.cwd);
+          [this.config.getString(Properties.BUILD_DIRECTORY)], this.cwd);
     }
   }
 
@@ -110,7 +110,7 @@ export default class Alloy {
     if (cwd !== undefined) {
       cwd = path.normalize(cwd);
     }
-    let newConfig = new Config(this.config);
+    // let newConfig = new Config(this.config);
     for (let p of paths) {
       // Resolve path if the specified working directory is different from the
       // one initially provided for this Alloy instance.
@@ -118,13 +118,12 @@ export default class Alloy {
         p = path.resolve(cwd, p);
       }
       // Add path to config if it doesn't already exist.
-      if (newConfig.getSources().indexOf(p) === -1) {
-        newConfig.add(Properties.SOURCES, p);
+      if (this.config.getSources().indexOf(p) === -1) {
+        this.config.add(Properties.SOURCES, p);
       }
     }
-    // Watch new paths and update the in memory config for this instance.
+    // Watch new paths.
     this.watcher.watch(paths, cwd);
-    this.setConfig(newConfig);
   }
 
   /**
@@ -140,7 +139,7 @@ export default class Alloy {
    * Returns the configuration of this Alloy instance.
    */
   public getConfig(): Object {
-    return this.config;
+    return this.config.getConfig();
   }
 
   /**
@@ -157,12 +156,10 @@ export default class Alloy {
    *     accepts a Config, Object, or JSON string.
    */
   private setConfig(config: string|Config|Object) {
-    if (typeof config === "string") {
-      this.config = JSON.parse(config)
-    } else if (config instanceof Config) {
-      this.config = config.getConfig();
-    } else {
+    if (config instanceof Config) {
       this.config = config;
+    } else {
+      this.config = new Config(config);
     }
   }
 }
