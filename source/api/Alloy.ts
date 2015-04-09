@@ -1,4 +1,4 @@
-import { path } from "../../vendor/npm";
+import { path as sysPath } from "../../vendor/npm";
 import BuildWatcher from "../service/BuildWatcher";
 import Config from "../config/Config";
 import Properties from "../config/Properties";
@@ -29,7 +29,7 @@ export default class Alloy {
    *     configuration are relative.
    */
   constructor(config: Config|Object|string, cwd: string) {
-    this.cwd = path.normalize(cwd);
+    this.cwd = sysPath.normalize(cwd);
     this.status = Status.STOPPED;
     this.setConfig(config);
   }
@@ -83,8 +83,9 @@ export default class Alloy {
     }
     // Exclude build output directory from watched sources.
     if (this.config.isConfigured(Properties.BUILD_DIRECTORY)) {
-      this.watcher.unwatch(
-          [this.config.getString(Properties.BUILD_DIRECTORY)], this.cwd);
+      let out =
+          sysPath.normalize(this.config.getString(Properties.BUILD_DIRECTORY));
+      this.watcher.unwatch([out + "/**/*"], this.cwd);
     }
   }
 
@@ -108,14 +109,14 @@ export default class Alloy {
     // TODO(joeloyj): Reconcile logic here with BuildWatcher and Config.
     // Normalize working directory if provided.
     if (cwd !== undefined) {
-      cwd = path.normalize(cwd);
+      cwd = sysPath.normalize(cwd);
     }
     // let newConfig = new Config(this.config);
     for (let p of paths) {
       // Resolve path if the specified working directory is different from the
       // one initially provided for this Alloy instance.
       if (cwd !== undefined && cwd !== this.cwd) {
-        p = path.resolve(cwd, p);
+        p = sysPath.resolve(cwd, p);
       }
       // Add path to config if it doesn't already exist.
       if (this.config.getSources().indexOf(p) === -1) {

@@ -45,19 +45,19 @@ export default class BuildWatcher {
   }
 
   /**
-   * Unwatches the given paths. If a given path is a directory,
-   * all descendents of the directory will be unwatched.
-   * Unwatching a file that is not watched results in a no-op.
+   * Unwatches the given paths. Unwatching a file that is not watched
+   * results in a no-op. Accepts anymatch-compatible paths.
+   * @see https://github.com/es128/anymatch
    */
   public unwatch(paths: string[], cwd: string): void {
     if (!this.isInitialized) {
       return;
     }
 
+    paths = paths.map((p: string): string => this.resolvePath(cwd, p));
     for (let p of paths) {
-      let resolvedPath: string = this.resolvePath(cwd, p);
-      this.watchList.delete(resolvedPath);
-      console.info("Unwatching path: ", resolvedPath);
+      this.watchList.delete(p);
+      console.info("Unwatching path: ", p);
     }
     this.watcher.unwatch(paths);
   }
@@ -90,6 +90,7 @@ export default class BuildWatcher {
     }
     this.watcher = chokidar
         .watch(paths, {
+          cwd: cwd,
           ignoreInitial: true,
           persistent: true,
         })
