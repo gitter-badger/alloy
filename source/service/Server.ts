@@ -1,9 +1,11 @@
 import { WatchData } from "types";
 import { chalk, ipc } from "../../vendor/npm";
+import * as _ from "lodash";
 import BuildWatcher from "./BuildWatcher";
 import Config from "../config/Config";
 import Properties from "../config/Properties";
 import ServiceUtils from "../service/ServiceUtils";
+
 
 /**
  * Service for asynchronous task execution such as file watching and building,
@@ -46,21 +48,22 @@ export default class Server {
     // Start IPC server.
     ipc.server.start();
 
+    // TODO(joeloyj): Rewrite using new API.
     // Load alloy config and start watching files.
-    try {
-      if (Config.hasConfig(process.cwd())) {
-        let config: Config = new Config(process.cwd()).read();
-        this.watcher.watch(config.getPaths(), process.cwd());
-        this.watcher.unwatch(config.getExcluded(), process.cwd());
-        if (config.isConfigured(Properties.BUILD_DIRECTORY)) {
-          this.watcher.unwatch(
-              [config.getString(Properties.BUILD_DIRECTORY)], process.cwd());
-        }
-      }
-    } catch (e) {
-      console.error(e.toString());
-      console.error(chalk.red("alloy: error reading Alloy configuration."));
-    }
+    // try {
+    //   if (Config.hasConfig(process.cwd())) {
+    //     let config: Config = new Config(process.cwd()).read();
+    //     this.watcher.watch(config.getPaths(), process.cwd());
+    //     this.watcher.unwatch(config.getExcluded(), process.cwd());
+    //     if (config.isConfigured(Properties.BUILD_DIRECTORY)) {
+    //       this.watcher.unwatch(
+    //           [config.getString(Properties.BUILD_DIRECTORY)], process.cwd());
+    //     }
+    //   }
+    // } catch (e) {
+    //   console.error(e.toString());
+    //   console.error(chalk.red("alloy: error reading Alloy configuration."));
+    // }
   }
 
   /**

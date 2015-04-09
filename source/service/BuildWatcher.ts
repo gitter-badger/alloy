@@ -1,5 +1,6 @@
 import { chalk, child_process, chokidar, path } from "../../vendor/npm";
 import { FSWatcher } from "fs";
+import * as _ from "lodash";
 
 const BUILD_DEBOUNCE_MS = 50;
 

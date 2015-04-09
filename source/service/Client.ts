@@ -1,5 +1,6 @@
 import { WatchData } from "types";
 import { chalk, ipc } from "../../vendor/npm";
+import * as _ from "lodash";
 import ServiceUtils from "../service/ServiceUtils";
 
 /**

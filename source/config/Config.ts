@@ -1,55 +1,32 @@
-import { chalk, fs, path } from "../../vendor/npm";
+import { path } from "../../vendor/npm";
 import Properties from "../config/Properties";
 
 const CONFIG_FILENAME = ".alloy";
 
 /**
- * Encapsulates functionality for reading and writing to an Alloy
- * configuration file.
+ * Model representing an Alloy configuration. Encapsulates functionality
+ * for working with configurations.
  *
  * @author Joel Ong (joelo@google.com)
- * @copyright 2015 Google Inc
  */
 export default class Config {
-  // Alloy configuration parsed from the config file.
-  // TODO(joeloyj): Use a map instead and convert to JSON when writing to disk.
-  private config: Object;
-  private configPath: string;
-
-  constructor(private directory: string) {}
+  // Alloy configuration.
+  protected config: Object;
 
   /**
-   * Creates an alloy config for the current directory.
+   * @param config Optional config to load, this could be either a JSON string
+   *     or a compatible object.
    */
-  public create(): Config {
-    if (Config.hasConfig(this.directory)) {
-      throw new Error("Alloy configuration already exists.");
+  constructor(config?: string|Object) {
+    if (config === undefined) {
+      return;
     }
-    this.config = {};
-    this.configPath = path.join(this.directory, CONFIG_FILENAME);
-    return this;
-  }
-
-  /**
-   * Finds the .alloy config file and retrieves the current configuration.
-   */
-  public read(): Config {
-    // TODO(joeloyj): Check all parent directories for config file.
-    this.configPath = path.join(this.directory, CONFIG_FILENAME);
-    this.config = JSON.parse(
-        fs.readFileSync(this.configPath, { encoding: "utf8" }));
-    return this;
-  }
-
-  /**
-   * Writes the current configuration to the .alloy config file.
-   */
-  public write(): Config {
-    if (!this.config) {
-      throw new Error("Nothing to write.");
+    if (typeof config === "string") {
+      this.config = JSON.parse(config);
+    } else {
+      this.config = JSON.parse(JSON.stringify(config));
     }
-    fs.writeFileSync(this.configPath, this.toString());
-    return this;
+    Config.validate(this.config);
   }
 
   /**
@@ -97,14 +74,14 @@ export default class Config {
   public getList(property: string): string[] {
     Properties.validateList(property);
 
-    return this.config[property];
+    return this.config[property].slice();
   }
 
   /**
    * Sets a property to the given string value.
    */
   public setString(property: string, value: string): Config {
-    Properties.validateString(property);
+    Properties.validateString(property, value);
     if (!this.config) {
       this.config = {};
     }
@@ -115,12 +92,16 @@ export default class Config {
   /**
    * Sets a list property to the given array of strings.
    */
-  public setList(property: string, value: string[]): Config {
-    Properties.validateList(property);
+  public setList(property: string, value: string|string[]): Config {
+    Properties.validateList(property, value);
     if (!this.config) {
       this.config = {};
     }
-    this.config[property] = value;
+    if (typeof value === "string") {
+      this.config[property] = JSON.parse(value);
+    } else {
+      this.config[property] = value.slice();
+    }
     return this;
   }
 
@@ -167,7 +148,7 @@ export default class Config {
    * Returns an object representing this config.
    */
   public getConfig(): Object {
-    return this.config;
+    return JSON.parse(this.toString());
   }
 
   /**
@@ -177,19 +158,27 @@ export default class Config {
     return JSON.stringify(this.config, null, 2);
   }
 
-  /**
-   * Returns true if there is an Alloy configuration for the given directory.
-   */
-  public static hasConfig(directory: string): boolean {
-    // TODO(joeloyj): Check all parent directories for config file.
-    try {
-      fs.statSync(path.join(directory, CONFIG_FILENAME));
-      return true;
-    } catch (e) {
-      if (e.errno === -2) {
-        return false;
+  public static validate(
+      config: string|Object, onError?: (err: Error) => void) {
+    let configObj: Object;
+    if (typeof config === "string") {
+      try {
+        configObj = JSON.parse(config);
+      } catch (e) {
+        if (onError) onError(e);
+        else throw e;
       }
-      throw e;
+    } else {
+      configObj = config;
+    }
+
+    try {
+      for (let property of Object.keys(configObj)) {
+        Properties.validate(configObj[property]);
+      }
+    } catch (e) {
+      if (onError) onError(e);
+      else throw e;
     }
   }
 }

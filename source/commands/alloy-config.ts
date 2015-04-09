@@ -1,5 +1,6 @@
-import { chalk, commander, fs } from "../../vendor/npm";
+import { chalk, commander } from "../../vendor/npm";
 import Config from "../config/Config";
+import FileConfig from "../config/FileConfig";
 import Properties from "../config/Properties";
 
 /**
@@ -23,6 +24,8 @@ const description: string =
   supported by anymatch. See https://github.com/es128/anymatch.`;
 
 const commands: string[] = ["add", "delete", "list", "get", "set"];
+
+let processedCommand = false;
 
 commander.description(description);
 
@@ -50,7 +53,8 @@ commander
 commander.parse(process.argv);
 
 // Show error message if command was not recognized.
-if (commander.args.length
+if (!processedCommand
+    && commander.args.length
     && typeof commander.args[0] === "string"
     && commands.indexOf(commander.args[0]) === -1) {
   console.error("alloy: '" + commander.args[0] + "' is not an alloy-config " +
@@ -67,38 +71,42 @@ if (!commander.args.length) {
  * Lists all of the properties that are configured.
  */
 function list(): void {
-  console.log(chalk.yellow("Alloy configuration:\n" + getConfig().toString()));
+  processedCommand = true;
+  getConfigAndApply(config =>
+    console.log(chalk.yellow("Alloy configuration:\n" + config.toString())));
 }
 
 /**
  * Displays the value of the given property.
  */
 function getProperty(): void {
+  processedCommand = true;
   let property: string = commander.args[0];
 
   // Show usage if there no property was specified.
   if (!commander.args.length || typeof property !== "string") {
     commander.help();
   }
-  // Make sure Alloy is configured.
-  let config: Config = getConfig();
 
-  // Check that the specified property is valid.
-  checkProperty(property);
+  getConfigAndApply(config => {
+    // Check that the specified property is valid.
+    checkProperty(property);
 
-  if (config.isConfigured(property)) {
-    console.log(chalk.yellow(
-        property, "=", JSON.stringify(config.getConfig()[property], null, 2)));
-  } else {
-    console.log(chalk.yellow(`alloy: property '${property}' is not set.`));
-  }
-  process.exit();
+    if (config.isConfigured(property)) {
+      console.log(chalk.yellow(property, "=",
+          JSON.stringify(config.getConfig()[property], null, 2)));
+    } else {
+      console.log(chalk.yellow(`alloy: property '${property}' is not set.`));
+    }
+    process.exit();
+  });
 }
 
 /**
  * Sets the value of the given property.
  */
 function setProperty(): void {
+  processedCommand = true;
   let property: string = commander.args[0];
   let value: string = commander.args[1];
 
@@ -107,39 +115,37 @@ function setProperty(): void {
       || typeof value !== "string") {
     commander.help();
   }
-  // Make sure Alloy is configured.
-  let config: Config = getConfig();
 
-  // Check that the specified property is valid.
-  checkProperty(property);
+  getConfigAndApply(config => {
+    // Check that the specified property is valid.
+    checkProperty(property);
 
-  if (Properties.isString(property)) {
-    config.setString(property, value);
-  } else if (Properties.isList(property)) {
     try {
-      config.setList(property, JSON.parse(value));
+      if (Properties.isString(property)) {
+        config.setString(property, value);
+      } else if (Properties.isList(property)) {
+        config.setList(property, value);
+      }
     } catch (e) {
-      console.error(chalk.red(`alloy: "${value}" is not a valid JSON array.`))
+      console.error(chalk.red(`alloy: ${e.message}`));
       process.exit();
     }
-  }
 
-  try {
-    config.write();
-    console.log(chalk.yellow(
-        "Alloy configuration property set:\n" + property,
-        "=", value));
-  } catch (e) {
-    console.error(e.toString());
-    console.error(chalk.red("alloy: error writing Alloy configuration."));
-  }
-  process.exit();
+    config.write().then(
+      config => {
+        console.log(chalk.yellow(
+            "Alloy configuration property set:\n" + property,
+            "=", value));
+        process.exit();
+      }, onWriteError);
+  });
 }
 
 /**
  * Adds a value to the given list property.
  */
 function addProperty(): void {
+  processedCommand = true;
   let property: string = commander.args[0];
   let value: string = commander.args[1];
 
@@ -148,82 +154,91 @@ function addProperty(): void {
       || typeof value !== "string") {
     commander.help();
   }
-  // Make sure Alloy is configured.
-  let config: Config = getConfig();
 
-  // Check that the specified property is valid and is a list.
-  try {
-    Properties.validateList(property);
-  } catch (e) {
-    console.error(chalk.red("alloy: " + e.message));
-    process.exit();
-  }
+  getConfigAndApply(config => {
+    // Check that the specified property is valid.
+    checkProperty(property);
 
-  config.add(property, value);
-  try {
-    config.write();
-    console.log(chalk.yellow(
-        "Alloy configuration property updated:\n" + property,
-        "=", JSON.stringify(config.getList(property), null, 2)));
-  } catch (e) {
-    console.error(e.toString());
-    console.error(chalk.red("alloy: error writing Alloy configuration."));
-  }
-  process.exit();
+    // Check that the specified property is valid and is a list.
+    try {
+      Properties.validateList(property);
+    } catch (e) {
+      console.error(chalk.red("alloy: " + e.message));
+      process.exit();
+    }
+
+    config.add(property, value);
+    config.write().then(
+      config => {
+        console.log(chalk.yellow(
+            "Alloy configuration property updated:\n" + property,
+            "=", JSON.stringify(config.getList(property), null, 2)));
+        process.exit();
+      }, onWriteError);
+  });
 }
 
 /**
  * Deletes the given property.
  */
 function deleteProperty(): void {
+  processedCommand = true;
   let property: string = commander.args[0];
 
   // Show usage if there no property was specified.
   if (!commander.args.length || typeof property !== "string") {
     commander.help();
   }
-  // Make sure Alloy is configured.
-  let config: Config = getConfig();
 
-  // Check that the specified property is valid.
-  checkProperty(property);
 
-  if (!config.isConfigured(property)) {
-    console.error(chalk.yellow(`alloy: property '${property}' is not set.`));
-    process.exit();
-  }
+  getConfigAndApply(config => {
+    // Check that the specified property is valid.
+    checkProperty(property);
 
-  let value = config.getConfig()[property];
-  config.delete(property);
-  try {
-    config.write();
-    console.log(chalk.yellow(
-        "Deleted property:", property, "=", JSON.stringify(value, null, 2)));
-  } catch (e) {
-    console.error(e.toString());
-    console.error(chalk.red("alloy: error writing Alloy configuration."));
-  }
-  process.exit();
+    if (!config.isConfigured(property)) {
+      console.error(chalk.yellow(`alloy: property '${property}' is not set.`));
+      process.exit();
+    }
+
+    let value = config.getConfig()[property];
+    config.delete(property);
+    config.write().then(
+      config => {
+        console.log(chalk.yellow("Deleted property:", property, "=",
+            JSON.stringify(value, null, 2)));
+        process.exit();
+      }, onWriteError);
+  });
 }
 
 /**
- * Retrieves the current configuration from the .alloy config file.
+ * Retrieves the current configuration from the .alloy config file and applies
+ * the given callback.
  * Aborts with an error message if no configuration is found.
  */
-function getConfig(): Config {
-  try {
-    return new Config(process.cwd()).read();
-  } catch (e) {
-    if (e.errno === -2) {
-      console.error(chalk.red(
-          `alloy: Alloy is not configured. See "alloy init --help".`));
-    } else {
-      // Got a stat error other than ENOENT (file not found).
-      console.error(e.toString());
-      console.error(chalk.red("alloy: error reading Alloy configuration."));
+function getConfigAndApply(callback: (config: FileConfig) => void): void {
+  new FileConfig(process.cwd()).read().then(
+    config => {
+      callback(config);
+    },
+    err => {
+      if (err.errno === -2) {
+        console.error(chalk.red(
+            `alloy: Alloy is not configured. See "alloy init --help".`));
+      } else {
+        // Got an error other than ENOENT (file not found).
+        console.error(err.toString());
+        console.error(chalk.red("alloy: error reading Alloy configuration."));
+      }
+      process.exit();
     }
-    process.exit();
-  }
+  );
+}
+
+function onWriteError(err: Error) {
+  console.error(err.toString());
+  console.error(chalk.red("alloy: error writing Alloy configuration."));
+  process.exit();
 }
 
 /**

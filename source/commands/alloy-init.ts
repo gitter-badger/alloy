@@ -1,5 +1,5 @@
-import { chalk, commander, fs } from "../../vendor/npm";
-import Config from "../config/Config";
+import { chalk, commander } from "../../vendor/npm";
+import FileConfig from "../config/FileConfig";
 
 /**
  * alloy-init.js
@@ -25,24 +25,17 @@ if (commander.args.length) {
   process.exit();
 }
 
-let config: Config;
-try {
-  config = new Config(process.cwd()).create();
-} catch (e) {
-  if (e.hasOwnProperty("errno")) {
-    console.error(e.toString());
-    console.error(chalk.red("alloy: init failed due to stat error."));
-  } else {
-    console.error(chalk.red("alloy: " + e.message));
-  }
-  process.exit();
-}
-
 // TODO(joeloyj): Add interactive configuration.
-try {
-  config.write();
-  console.info(chalk.yellow("Created Alloy configuration."));
-} catch (e) {
-  console.error(e.toString());
-  console.error(chalk.red("alloy: error writing .alloy config."));
-}
+new FileConfig(process.cwd()).create().then(
+  config => {
+    console.info(chalk.yellow("Created Alloy configuration."));
+  },
+  err => {
+    if (err.hasOwnProperty("errno")) {
+      console.error(err.toString());
+      console.error(chalk.red("alloy: init failed."));
+    } else {
+      console.error(chalk.red("alloy: " + err.message));
+    }
+    process.exit();
+  });
