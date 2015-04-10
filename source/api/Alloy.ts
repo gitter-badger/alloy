@@ -1,4 +1,4 @@
-import { path as sysPath } from "../../vendor/npm";
+import { path as sysPath, ramda as R } from "../../vendor/npm";
 import BuildWatcher from "../service/BuildWatcher";
 import Config from "../config/Config";
 import Properties from "../config/Properties";
@@ -111,7 +111,6 @@ export default class Alloy {
     if (cwd !== undefined) {
       cwd = sysPath.normalize(cwd);
     }
-    // let newConfig = new Config(this.config);
     for (let p of paths) {
       // Resolve path if the specified working directory is different from the
       // one initially provided for this Alloy instance.
@@ -119,9 +118,7 @@ export default class Alloy {
         p = sysPath.resolve(cwd, p);
       }
       // Add path to config if it doesn't already exist.
-      if (this.config.getSources().indexOf(p) === -1) {
-        this.config.add(Properties.SOURCES, p);
-      }
+      this.config.add(Properties.SOURCES, p);
     }
     // Watch new paths.
     this.watcher.watch(paths, cwd);

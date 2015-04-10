@@ -1,3 +1,5 @@
+import { ramda as R } from "../../vendor/npm";
+
 /**
  * Defines Alloy configuration properties and provides basic utilities for
  * working with them.
@@ -31,7 +33,7 @@ export default class Properties {
    * whose value is a string.
    */
   public static isString(property: string): boolean {
-    return Properties.STRING_PROPERTIES.indexOf(property) >= 0;
+    return R.contains(property, Properties.STRING_PROPERTIES);
   }
 
   /**
@@ -39,7 +41,7 @@ export default class Properties {
    * whose value is a list of strings.
    */
   public static isList(property: string): boolean {
-    return Properties.LIST_PROPERTIES.indexOf(property) >= 0;
+    return R.contains(property, Properties.LIST_PROPERTIES);
   }
 
   /**

@@ -1,4 +1,4 @@
-import { path, ramda as R } from "../../vendor/npm";
+import { arrify, path, ramda as R } from "../../vendor/npm";
 import Properties from "../config/Properties";
 
 const CONFIG_FILENAME = ".alloy";
@@ -19,6 +19,7 @@ export default class Config {
    */
   constructor(config?: string|Object) {
     if (config === undefined) {
+      this.config = {};
       return;
     }
     if (typeof config === "string") {
@@ -26,6 +27,10 @@ export default class Config {
     } else {
       this.config = JSON.parse(JSON.stringify(config));
     }
+    let dedupeIfList = (value) => {
+      return Array.isArray(value) ? R.uniq(value) : value;
+    }
+    this.config = R.evolve(dedupeIfList, this.config);
     Config.validate(this.config);
   }
 
@@ -33,22 +38,14 @@ export default class Config {
    * Return the list of source paths watched by this Alloy configuration.
    */
   public getSources(): string[] {
-    if (this.isConfigured(Properties.SOURCES)) {
-      return this.getList(Properties.SOURCES);
-    } else {
-      return [];
-    }
+    return arrify(this.getList(Properties.SOURCES));
   }
 
   /**
    * Return the list of paths excluded from this Alloy configuration.
    */
   public getExcluded(): string[] {
-    if (this.isConfigured(Properties.EXCLUDE)) {
-      return this.getList(Properties.EXCLUDE);
-    } else {
-      return [];
-    }
+    return arrify(this.getList(Properties.EXCLUDE));
   }
 
   /**
@@ -56,7 +53,24 @@ export default class Config {
    */
   public isConfigured(property: string): boolean {
     Properties.validate(property);
-    return this.config !== undefined && R.has(property, this.config);
+    return R.has(property, this.config);
+  }
+
+  /**
+   * Deletes the given property.
+   */
+  public delete(property: string): Config {
+    Properties.validate(property);
+    this.config = R.dissoc(property, this.config);
+    return this;
+  }
+
+  /**
+   * Returns the value of the given property, which could be a list or an array.
+   */
+  public get(property: string): string|string[] {
+    Properties.validate(property);
+    return R.clone(this.config[property]);
   }
 
   /**
@@ -73,7 +87,7 @@ export default class Config {
    */
   public getList(property: string): string[] {
     Properties.validateList(property);
-    return this.config[property].slice();
+    return R.clone(this.config[property]);
   }
 
   /**
@@ -81,10 +95,7 @@ export default class Config {
    */
   public setString(property: string, value: string): Config {
     Properties.validateString(property, value);
-    if (this.config === undefined) {
-      this.config = {};
-    }
-    this.config[property] = value;
+    this.config = R.assoc(property, value, this.config);
     return this;
   }
 
@@ -93,13 +104,10 @@ export default class Config {
    */
   public setList(property: string, value: string|string[]): Config {
     Properties.validateList(property, value);
-    if (this.config === undefined) {
-      this.config = {};
-    }
     if (typeof value === "string") {
-      this.config[property] = JSON.parse(value);
+      this.config = R.assoc(property, JSON.parse(value), this.config);
     } else {
-      this.config[property] = value.slice();
+      this.config = R.assoc(property, R.clone(value), this.config);
     }
     return this;
   }
@@ -109,10 +117,8 @@ export default class Config {
    */
   public contains(property: string, value: string): boolean {
     Properties.validateList(property);
-    if (!this.isConfigured(property)) {
-      return false;
-    }
-    return R.contains(value, this.config[property]);
+    return R.has(property, this.config)
+        && R.contains(value, this.config[property]);
   }
 
   /**
@@ -120,15 +126,8 @@ export default class Config {
    */
   public add(property: string, value: string): Config {
     Properties.validateList(property);
-    if (this.config === undefined) {
-      this.config = {};
-    }
-    if (!this.isConfigured(property)) {
-      this.config[property] = [];
-    }
-    if (!this.contains(property, value)) {
-      this.config[property].push(value);
-    }
+    let newArr = R.append(value, this.config[property]);
+    this.config = R.assoc(property, R.uniq(newArr), this.config);
     return this;
   }
 
@@ -139,18 +138,8 @@ export default class Config {
     Properties.validateList(property);
     if (this.contains(property, value)) {
       let arr = this.config[property];
-      this.config[property] = R.remove(R.indexOf(value, arr), 1, arr);
-    }
-    return this;
-  }
-
-  /**
-   * Deletes the given property.
-   */
-  public delete(property: string): Config {
-    Properties.validate(property);
-    if (this.isConfigured(property)) {
-      delete this.config[property];
+      arr = R.remove(R.indexOf(value, arr), 1, arr);
+      this.config = R.assoc(property, arr, this.config);
     }
     return this;
   }
