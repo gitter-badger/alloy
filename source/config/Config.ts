@@ -1,4 +1,4 @@
-import { path } from "../../vendor/npm";
+import { path, ramda as R } from "../../vendor/npm";
 import Properties from "../config/Properties";
 
 const CONFIG_FILENAME = ".alloy";
@@ -56,7 +56,7 @@ export default class Config {
    */
   public isConfigured(property: string): boolean {
     Properties.validate(property);
-    return this.config.hasOwnProperty(property);
+    return this.config !== undefined && R.has(property, this.config);
   }
 
   /**
@@ -73,7 +73,6 @@ export default class Config {
    */
   public getList(property: string): string[] {
     Properties.validateList(property);
-
     return this.config[property].slice();
   }
 
@@ -82,7 +81,7 @@ export default class Config {
    */
   public setString(property: string, value: string): Config {
     Properties.validateString(property, value);
-    if (!this.config) {
+    if (this.config === undefined) {
       this.config = {};
     }
     this.config[property] = value;
@@ -94,7 +93,7 @@ export default class Config {
    */
   public setList(property: string, value: string|string[]): Config {
     Properties.validateList(property, value);
-    if (!this.config) {
+    if (this.config === undefined) {
       this.config = {};
     }
     if (typeof value === "string") {
@@ -110,10 +109,10 @@ export default class Config {
    */
   public contains(property: string, value: string): boolean {
     Properties.validateList(property);
-    if (!this.config || !this.config.hasOwnProperty(property)) {
+    if (!this.isConfigured(property)) {
       return false;
     }
-    return this.config[property].indexOf(value) >= 0;
+    return R.contains(value, this.config[property]);
   }
 
   /**
@@ -121,10 +120,10 @@ export default class Config {
    */
   public add(property: string, value: string): Config {
     Properties.validateList(property);
-    if (!this.config) {
+    if (this.config === undefined) {
       this.config = {};
     }
-    if (!this.config.hasOwnProperty(property)) {
+    if (!this.isConfigured(property)) {
       this.config[property] = [];
     }
     if (!this.contains(property, value)) {
@@ -134,11 +133,23 @@ export default class Config {
   }
 
   /**
+   * Removes a string value from a given list property.
+   */
+  public remove(property: string, value: string): Config {
+    Properties.validateList(property);
+    if (this.contains(property, value)) {
+      let arr = this.config[property];
+      this.config[property] = R.remove(R.indexOf(value, arr), 1, arr);
+    }
+    return this;
+  }
+
+  /**
    * Deletes the given property.
    */
   public delete(property: string): Config {
     Properties.validate(property);
-    if (this.config.hasOwnProperty(property)) {
+    if (this.isConfigured(property)) {
       delete this.config[property];
     }
     return this;
@@ -158,6 +169,9 @@ export default class Config {
     return JSON.stringify(this.config, null, 2);
   }
 
+  /**
+   * Validates the given Alloy configuration.
+   */
   public static validate(
       config: string|Object, onError?: (err: Error) => void) {
     let configObj: Object;
