@@ -126,11 +126,26 @@ export default class Alloy {
 
   /**
    * Excludes the given paths from the list of sources monitored by this
-   * Alloy instance.
+   * Alloy instance. Paths must either be fully specified, or a working
+   * directory must be provided. Accepts anymatch-compatible paths.
+   * @see https://github.com/es128/anymatch
    */
-  public exclude(paths: string): void {
-    // TODO(joeloyj): Implement.
-    throw new Error("Not implemented.");
+  public exclude(paths: string[], cwd?: string): void {
+    // TODO(joeloyj): Reconcile logic here with BuildWatcher and Config.
+    // Normalize working directory if provided.
+    if (cwd !== undefined) {
+      cwd = sysPath.normalize(cwd);
+    }
+    for (let p of paths) {
+      // Resolve path if a working directory was specified.
+      if (cwd !== undefined) {
+        p = sysPath.resolve(cwd, p);
+      }
+      // Add excluded path to config if it doesn't already exist.
+      this.config.add(Properties.EXCLUDE, p);
+    }
+    // Unwatch new paths.
+    this.watcher.unwatch(paths, cwd);
   }
 
   /**

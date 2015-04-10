@@ -77,7 +77,7 @@ export default class Server {
   }
 
   private onUnwatch(data: WatchData, socket): void {
-    // TODO(joeloyj): Unwatch using Alloy#exclude.
+    this.alloy.exclude(data.paths, data.cwd);
     ipc.server.emit(socket, "unwatched");
   }
 }
