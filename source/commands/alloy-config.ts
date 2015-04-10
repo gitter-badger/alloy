@@ -31,23 +31,27 @@ commander.description(description);
 
 commander
     .command("add [property] [value]")
-    .description("adds a value to the given list property")
-    .action(addProperty);
+    .description("add a value to the given list property")
+    .action(addToProperty);
 commander
     .command("delete [property]")
-    .description("deletes the given property")
+    .description("delete the given property")
     .action(deleteProperty);
 commander
     .command("get [property]")
-    .description("displays the value of the given property")
+    .description("display the value of the given property")
     .action(getProperty);
 commander
     .command("list")
     .description("list values for all properties (default)")
     .action(list);
 commander
+    .command("remove [propoerty] [value]")
+    .description("remove a value from the given list property")
+    .action(removeFromProperty);
+commander
     .command("set [property] [value]")
-    .description("sets the value of the given property")
+    .description("set the value of the given property")
     .action(setProperty);
 
 commander.parse(process.argv);
@@ -144,7 +148,7 @@ function setProperty(): void {
 /**
  * Adds a value to the given list property.
  */
-function addProperty(): void {
+function addToProperty(): void {
   processedCommand = true;
   let property: string = commander.args[0];
   let value: string = commander.args[1];
@@ -190,7 +194,6 @@ function deleteProperty(): void {
     commander.help();
   }
 
-
   getConfigAndApply(config => {
     // Check that the specified property is valid.
     checkProperty(property);
@@ -206,6 +209,43 @@ function deleteProperty(): void {
       config => {
         console.log(chalk.yellow("Deleted property:", property, "=",
             JSON.stringify(value, null, 2)));
+        process.exit();
+      }, onWriteError);
+  });
+}
+
+/**
+ * Removes a value from the given list property.
+ */
+function removeFromProperty(): void {
+  processedCommand = true;
+  let property: string = commander.args[0];
+  let value: string = commander.args[1];
+
+  // Show usage if there no property or value was specified.
+  if (commander.args.length < 2 || typeof property !== "string"
+      || typeof value !== "string") {
+    commander.help();
+  }
+
+  getConfigAndApply(config => {
+    // Check that the specified property is valid.
+    checkProperty(property);
+
+    // Check that the specified property is valid and is a list.
+    try {
+      Properties.validateList(property);
+    } catch (e) {
+      console.error(chalk.red("alloy: " + e.message));
+      process.exit();
+    }
+
+    config.remove(property, value);
+    config.write().then(
+      config => {
+        console.log(chalk.yellow(
+            "Alloy configuration property updated:\n" + property,
+            "=", JSON.stringify(config.getList(property), null, 2)));
         process.exit();
       }, onWriteError);
   });
