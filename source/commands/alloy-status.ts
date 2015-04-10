@@ -1,4 +1,6 @@
+import { Process } from "types";
 import { chalk, commander } from "../../vendor/npm";
+import ServiceUtils from "../service/ServiceUtils";
 
 /**
  * alloy-status.js
@@ -23,5 +25,15 @@ if (commander.args.length) {
   process.exit();
 }
 
-// TODO(joeloyj): Implement.
-console.error(chalk.red("Not implemented."));
+ServiceUtils.lookupService((results: Process[]): void => {
+  if (results.length === 0) {
+    console.log(chalk.yellow("Alloy service is not running."));
+  } else {
+    console.log(chalk.yellow("Alloy service is running."));
+
+    // TODO(joeloyj): Implement.
+    console.log(chalk.yellow("Last build:"), chalk.red("Not implemented."));
+    console.log(chalk.yellow("Source paths:"), chalk.red("Not implemented."));
+    console.log(chalk.yellow("Excluded paths:"), chalk.red("Not implemented."));
+  }
+});

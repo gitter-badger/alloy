@@ -46,7 +46,7 @@ commander
     .description("list values for all properties (default)")
     .action(list);
 commander
-    .command("remove [propoerty] [value]")
+    .command("remove [property] [value]")
     .description("remove a value from the given list property")
     .action(removeFromProperty);
 commander
