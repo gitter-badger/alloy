@@ -15,19 +15,21 @@ import { selftest } from "./tests/selftest";
 const commands: string[] =
     ["build", "config", "init", "start", "status", "stop", "trace", "watch"];
 
+const destription: string = "Anti-build for the Web & Node."
+
 // Splash Screen
 console.log(chalk.yellow(`
             __ __
      ___ _ / // /__  __ __
    / _  // // // _ \\/ // /    Alloy v${package_json.version}
-   \\_,_//_//_/ \\___/\\_, /     ES6 Modules for Polyglot Web Components
+   \\_,_//_//_/ \\___/\\_, /     ${destription}
                    /___/
 `));
 
 // Setup command interface
 commander
   .version(package_json.version)
-  .description("ES6 Modules for Polyglot Web Components")
+  .description(destription)
   .command("build", "build files with Alloy")
   .command("config", "display or set Alloy configuration properties")
   .command("init", "setup Alloy configuration interactively")
