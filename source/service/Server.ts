@@ -1,10 +1,8 @@
 import { WatchData } from "types";
-import { chalk, ipc } from "../../vendor/npm";
-import * as _ from "lodash";
+import { chalk, ipc, ramda as R } from "../../vendor/npm";
 import Alloy from "../api/Alloy";
 import FileConfig from "../config/FileConfig";
 import ServiceUtils from "../service/ServiceUtils";
-
 
 /**
  * Service for asynchronous task execution such as file watching and building,
@@ -39,7 +37,7 @@ export default class Server {
       }, onError);
 
     // IPC configuration.
-    _.extend(ipc.config, {
+    ipc.config = R.merge(ipc.config, {
       appspace       : "alloy.",
       socketRoot     : "/tmp/",
       id             : ServiceUtils.SERVICE_ID,
@@ -72,12 +70,12 @@ export default class Server {
   }
 
   private onWatch(data: WatchData, socket): void {
-    this.alloy.addSources(data.paths, data.cwd);
+    this.alloy.addSources(data.paths, data.directory);
     ipc.server.emit(socket, "watched");
   }
 
   private onUnwatch(data: WatchData, socket): void {
-    this.alloy.exclude(data.paths, data.cwd);
+    this.alloy.exclude(data.paths, data.directory);
     ipc.server.emit(socket, "unwatched");
   }
 }

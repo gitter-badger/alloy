@@ -11,7 +11,7 @@ const CONFIG_FILENAME = ".alloy";
  */
 export default class Config {
   // Alloy configuration.
-  protected config: Object;
+  protected _config: Object;
 
   /**
    * @param config Optional config to load, this could be either a JSON string
@@ -19,19 +19,19 @@ export default class Config {
    */
   constructor(config?: string|Object) {
     if (config === undefined) {
-      this.config = {};
+      this._config = {};
       return;
     }
     if (typeof config === "string") {
-      this.config = JSON.parse(config);
+      this._config = JSON.parse(config);
     } else {
-      this.config = JSON.parse(JSON.stringify(config));
+      this._config = JSON.parse(JSON.stringify(config));
     }
     let dedupeIfList = (value) => {
       return Array.isArray(value) ? R.uniq(value) : value;
     }
-    this.config = R.evolve(dedupeIfList, this.config);
-    Config.validate(this.config);
+    this._config = R.evolve(dedupeIfList, this._config);
+    Config.validate(this._config);
   }
 
   /**
@@ -53,7 +53,7 @@ export default class Config {
    */
   public isConfigured(property: string): boolean {
     Properties.validate(property);
-    return R.has(property, this.config);
+    return R.has(property, this._config);
   }
 
   /**
@@ -61,7 +61,7 @@ export default class Config {
    */
   public delete(property: string): Config {
     Properties.validate(property);
-    this.config = R.dissoc(property, this.config);
+    this._config = R.dissoc(property, this._config);
     return this;
   }
 
@@ -70,7 +70,7 @@ export default class Config {
    */
   public get(property: string): string|string[] {
     Properties.validate(property);
-    return R.clone(this.config[property]);
+    return R.clone(this._config[property]);
   }
 
   /**
@@ -78,7 +78,7 @@ export default class Config {
    */
   public getString(property: string): string {
     Properties.validateString(property);
-    return this.config[property];
+    return this._config[property];
   }
 
   /**
@@ -87,7 +87,7 @@ export default class Config {
    */
   public getList(property: string): string[] {
     Properties.validateList(property);
-    return R.clone(this.config[property]);
+    return R.clone(this._config[property]);
   }
 
   /**
@@ -95,7 +95,7 @@ export default class Config {
    */
   public setString(property: string, value: string): Config {
     Properties.validateString(property, value);
-    this.config = R.assoc(property, value, this.config);
+    this._config = R.assoc(property, value, this._config);
     return this;
   }
 
@@ -105,9 +105,9 @@ export default class Config {
   public setList(property: string, value: string|string[]): Config {
     Properties.validateList(property, value);
     if (typeof value === "string") {
-      this.config = R.assoc(property, JSON.parse(value), this.config);
+      this._config = R.assoc(property, JSON.parse(value), this._config);
     } else {
-      this.config = R.assoc(property, R.clone(value), this.config);
+      this._config = R.assoc(property, R.clone(value), this._config);
     }
     return this;
   }
@@ -117,8 +117,8 @@ export default class Config {
    */
   public contains(property: string, value: string): boolean {
     Properties.validateList(property);
-    return R.has(property, this.config)
-        && R.contains(value, this.config[property]);
+    return R.has(property, this._config)
+        && R.contains(value, this._config[property]);
   }
 
   /**
@@ -126,8 +126,8 @@ export default class Config {
    */
   public add(property: string, value: string): Config {
     Properties.validateList(property);
-    let newArr = R.append(value, this.config[property]);
-    this.config = R.assoc(property, R.uniq(newArr), this.config);
+    let newArr = R.append(value, this._config[property]);
+    this._config = R.assoc(property, R.uniq(newArr), this._config);
     return this;
   }
 
@@ -137,9 +137,9 @@ export default class Config {
   public remove(property: string, value: string): Config {
     Properties.validateList(property);
     if (this.contains(property, value)) {
-      let arr = this.config[property];
+      let arr = this._config[property];
       arr = R.remove(R.indexOf(value, arr), 1, arr);
-      this.config = R.assoc(property, arr, this.config);
+      this._config = R.assoc(property, arr, this._config);
     }
     return this;
   }
@@ -147,7 +147,7 @@ export default class Config {
   /**
    * Returns an object representing this config.
    */
-  public getConfig(): Object {
+  public get config(): Object {
     return JSON.parse(this.toString());
   }
 
@@ -155,7 +155,7 @@ export default class Config {
    * Returns a string representation of this configuration in formatted JSON.
    */
   public toString(): string {
-    return JSON.stringify(this.config, null, 2);
+    return JSON.stringify(this._config, undefined, 2);
   }
 
   /**

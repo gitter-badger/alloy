@@ -25,7 +25,7 @@ const description: string =
 
 const commands: string[] = ["add", "delete", "list", "get", "set"];
 
-let processedCommand = false;
+let processedCommand: boolean = false;
 
 commander.description(description);
 
@@ -98,7 +98,7 @@ function getProperty(): void {
 
     if (config.isConfigured(property)) {
       console.log(chalk.yellow(property, "=",
-          JSON.stringify(config.getConfig()[property], null, 2)));
+          JSON.stringify(config.config[property], undefined, 2)));
     } else {
       console.log(chalk.yellow(`alloy: property '${property}' is not set.`));
     }
@@ -176,7 +176,7 @@ function addToProperty(): void {
       config => {
         console.log(chalk.yellow(
             "Alloy configuration property updated:\n" + property,
-            "=", JSON.stringify(config.getList(property), null, 2)));
+            "=", JSON.stringify(config.getList(property), undefined, 2)));
         process.exit();
       }, onWriteError);
   });
@@ -203,12 +203,12 @@ function deleteProperty(): void {
       process.exit();
     }
 
-    let value = config.getConfig()[property];
+    let value = config.config[property];
     config.delete(property);
     config.write().then(
       config => {
         console.log(chalk.yellow("Deleted property:", property, "=",
-            JSON.stringify(value, null, 2)));
+            JSON.stringify(value, undefined, 2)));
         process.exit();
       }, onWriteError);
   });
@@ -245,7 +245,7 @@ function removeFromProperty(): void {
       config => {
         console.log(chalk.yellow(
             "Alloy configuration property updated:\n" + property,
-            "=", JSON.stringify(config.getList(property), null, 2)));
+            "=", JSON.stringify(config.getList(property), undefined, 2)));
         process.exit();
       }, onWriteError);
   });
@@ -262,11 +262,10 @@ function getConfigAndApply(callback: (config: FileConfig) => void): void {
       callback(config);
     },
     err => {
-      if (err.errno === -2) {
+      if (err.code === "ENOENT") { // File not found.
         console.error(chalk.red(
             `alloy: Alloy is not configured. See "alloy init --help".`));
       } else {
-        // Got an error other than ENOENT (file not found).
         console.error(err.toString());
         console.error(chalk.red("alloy: error reading Alloy configuration."));
       }

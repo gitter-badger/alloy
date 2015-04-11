@@ -1,6 +1,5 @@
 import { WatchData } from "types";
-import { chalk, ipc } from "../../vendor/npm";
-import * as _ from "lodash";
+import { chalk, ipc, ramda as R } from "../../vendor/npm";
 import ServiceUtils from "../service/ServiceUtils";
 
 /**
@@ -10,7 +9,7 @@ import ServiceUtils from "../service/ServiceUtils";
  */
 export default class Client {
   constructor() {
-    _.extend(ipc.config, {
+    ipc.config = R.merge(ipc.config, {
       appspace       : "alloy.",
       socketRoot     : "/tmp/",
       id             : "client",
@@ -32,7 +31,7 @@ export default class Client {
       ipc.of[ServiceUtils.SERVICE_ID].on("connect", (): void => {
         let data: WatchData = {
           paths: paths,
-          cwd: process.cwd()
+          directory: process.cwd()
         };
         ipc.of[ServiceUtils.SERVICE_ID].emit("watch", data);
       });

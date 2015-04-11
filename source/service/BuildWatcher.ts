@@ -1,4 +1,4 @@
-import { chalk, child_process, chokidar, path } from "../../vendor/npm";
+import { chalk, child_process, chokidar, path as sysPath } from "../../vendor/npm";
 import { FSWatcher } from "fs";
 import * as _ from "lodash";
 
@@ -16,8 +16,9 @@ export default class BuildWatcher {
   private debouncedBuild: () => void;
 
   constructor() {
-    this.isInitialized = false;
+    this.watcher = undefined;
     this.watchList = new Set();
+    this.isInitialized = false;
     this.debouncedBuild = _.debounce(this.build.bind(this), BUILD_DEBOUNCE_MS);
   }
 
@@ -25,15 +26,17 @@ export default class BuildWatcher {
    * Watches the given paths. If a given path is a directory,
    * all descendents of the directory will be watched.
    * Watching a file that is already watched results in a no-op.
+   *
+   * @param directory the directory to which given source paths are relative
    */
-  public watch(paths: string[], cwd: string): void {
+  public watch(paths: string[], directory: string): void {
     if (!this.isInitialized) {
-      this.initialize(paths, cwd);
+      this.initialize(paths, directory);
       return;
     }
 
-    for (let p of paths) {
-      let resolvedPath: string = this.resolvePath(cwd, p);
+    for (let path of paths) {
+      let resolvedPath: string = this.resolvePath(directory, path);
       if (this.watchList.has(resolvedPath)) {
         console.info("Rewatching path: ", resolvedPath);
       } else {
@@ -47,17 +50,19 @@ export default class BuildWatcher {
   /**
    * Unwatches the given paths. Unwatching a file that is not watched
    * results in a no-op. Accepts anymatch-compatible paths.
+   *
    * @see https://github.com/es128/anymatch
+   * @param directory the directory to which given source paths are relative
    */
-  public unwatch(paths: string[], cwd: string): void {
+  public unwatch(paths: string[], directory: string): void {
     if (!this.isInitialized) {
       return;
     }
 
-    paths = paths.map((p: string): string => this.resolvePath(cwd, p));
-    for (let p of paths) {
-      this.watchList.delete(p);
-      console.info("Unwatching path: ", p);
+    paths = paths.map((path) => this.resolvePath(directory, path));
+    for (let path of paths) {
+      this.watchList.delete(path);
+      console.info("Unwatching path: ", path);
     }
     this.watcher.unwatch(paths);
   }
@@ -79,29 +84,29 @@ export default class BuildWatcher {
   /**
    * Initializes the watcher.
    */
-  private initialize(paths: string[], cwd: string): void {
+  private initialize(paths: string[], directory: string): void {
     if (this.isInitialized) {
       return;
     }
 
     // Use current working directory if paths not specified.
-    if (!paths || paths.length === 0) {
-      paths = [ cwd ];
+    if (paths === undefined || paths.length === 0) {
+      paths = [ directory ];
     }
     this.watcher = chokidar
         .watch(paths, {
-          cwd: cwd,
+          cwd: directory,
           ignoreInitial: true,
           persistent: true,
         })
         .on("error", this.onError.bind(this))
         .on("all", this.onChange.bind(this));
 
-    paths = paths.map((p: string): string => this.resolvePath(cwd, p));
-    for (let p of paths) {
-      if (!this.watchList.has(p)) {
-        console.info("Watching path: ", p);
-        this.watcher.add(p);
+    paths = paths.map((path) => this.resolvePath(directory, path));
+    for (let path of paths) {
+      if (!this.watchList.has(path)) {
+        console.info("Watching path: ", path);
+        this.watcher.add(path);
       }
     }
 
@@ -132,7 +137,7 @@ export default class BuildWatcher {
     console.error(chalk.red("Watcher error: ", error));
   }
 
-  private resolvePath(cwd: string, pathSpec: string): string {
-    return cwd ? path.resolve(cwd, pathSpec) : pathSpec;
+  private resolvePath(directory: string, pathSpec: string): string {
+    return directory ? sysPath.resolve(directory, pathSpec) : pathSpec;
   }
 }

@@ -17,20 +17,21 @@ export enum Status {
  * @author Joel Ong (joelo@google.com)
  */
 export default class Alloy {
+  private _status: Status;
   private config: Config;
-  private cwd: string;
-  private status: Status;
+  private directory: string;
   private watcher: BuildWatcher;
 
   /**
    * @param config configuration to initialize this Alloy instance with,
    *     accepts a Config, Object, or JSON string.
-   * @param cwd working directory to which source paths in the initial
+   * @param directory the directory to which source paths in the initial
    *     configuration are relative.
    */
-  constructor(config: Config|Object|string, cwd: string) {
-    this.cwd = sysPath.normalize(cwd);
-    this.status = Status.STOPPED;
+  constructor(config: Config|Object|string, directory: string) {
+    this._status = Status.STOPPED;
+    this.directory = sysPath.normalize(directory);
+    this.watcher = undefined;
     this.setConfig(config);
   }
 
@@ -47,7 +48,8 @@ export default class Alloy {
    * Alloy will be restarted if it is already running.
    */
   public reconfigure(config: Config|Object|string): void {
-    let isRunning: boolean = this.status == Status.STARTED;
+    let isRunning: boolean = this._status === Status.STARTED;
+
     // Stop Alloy if it is running.
     if (isRunning) {
       this.stop();
@@ -70,22 +72,23 @@ export default class Alloy {
     if (this.watcher === undefined) {
       this.watcher = new BuildWatcher();
     }
-    this.status = Status.STARTED;
+    this._status = Status.STARTED;
     let sources: string[] = this.config.getSources();
     let excluded: string[] = this.config.getExcluded();
+
     // Watch source paths.
     if (sources.length > 0) {
-      this.watcher.watch(sources, this.cwd);
+      this.watcher.watch(sources, this.directory);
     }
     // Unwatch excluded paths.
     if (excluded.length > 0) {
-      this.watcher.unwatch(excluded, this.cwd);
+      this.watcher.unwatch(excluded, this.directory);
     }
     // Exclude build output directory from watched sources.
     if (this.config.isConfigured(Properties.BUILD_DIRECTORY)) {
       let out =
           sysPath.normalize(this.config.getString(Properties.BUILD_DIRECTORY));
-      this.watcher.unwatch([out + "/**/*"], this.cwd);
+      this.watcher.unwatch([`${out}/**/*`], this.directory);
     }
   }
 
@@ -98,68 +101,72 @@ export default class Alloy {
       this.watcher.exit();
       this.watcher = undefined;
     }
-    this.status = Status.STOPPED;
+    this._status = Status.STOPPED;
   }
 
   /**
    * Adds the given paths to the list of sources monitored by this
    * Alloy instance.
+   *
+   * @param directory the directory to which given source paths are relative
    */
-  public addSources(paths: string[], cwd?: string): void {
+  public addSources(paths: string[], directory?: string): void {
     // TODO(joeloyj): Reconcile logic here with BuildWatcher and Config.
     // Normalize working directory if provided.
-    if (cwd !== undefined) {
-      cwd = sysPath.normalize(cwd);
+    if (directory !== undefined) {
+      directory = sysPath.normalize(directory);
     }
     for (let p of paths) {
       // Resolve path if the specified working directory is different from the
       // one initially provided for this Alloy instance.
-      if (cwd !== undefined && cwd !== this.cwd) {
-        p = sysPath.resolve(cwd, p);
+      if (directory !== undefined && directory !== this.directory) {
+        p = sysPath.resolve(directory, p);
       }
       // Add path to config if it doesn't already exist.
       this.config.add(Properties.SOURCES, p);
     }
     // Watch new paths.
-    this.watcher.watch(paths, cwd);
+    this.watcher.watch(paths, directory);
   }
 
   /**
    * Excludes the given paths from the list of sources monitored by this
    * Alloy instance. Paths must either be fully specified, or a working
    * directory must be provided. Accepts anymatch-compatible paths.
+   *
    * @see https://github.com/es128/anymatch
+   * @param directory the directory to which given source paths are relative
    */
-  public exclude(paths: string[], cwd?: string): void {
+  public exclude(paths: string[], directory?: string): void {
     // TODO(joeloyj): Reconcile logic here with BuildWatcher and Config.
     // Normalize working directory if provided.
-    if (cwd !== undefined) {
-      cwd = sysPath.normalize(cwd);
+    if (directory !== undefined) {
+      directory = sysPath.normalize(directory);
     }
     for (let p of paths) {
       // Resolve path if a working directory was specified.
-      if (cwd !== undefined) {
-        p = sysPath.resolve(cwd, p);
+      if (directory !== undefined) {
+        p = sysPath.resolve(directory, p);
       }
       // Add excluded path to config if it doesn't already exist.
       this.config.add(Properties.EXCLUDE, p);
     }
     // Unwatch new paths.
-    this.watcher.unwatch(paths, cwd);
+    this.watcher.unwatch(paths, directory);
   }
 
   /**
    * Returns the configuration of this Alloy instance.
    */
   public getConfig(): Object {
-    return this.config.getConfig();
+    return this.config.config;
   }
 
   /**
    * Returns the status of this Alloy instance.
    */
-  public getStatus(): Status {
-    return this.status;
+  public get status(): Status {
+    return this._status;
   }
 
   /**

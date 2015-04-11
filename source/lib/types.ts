@@ -8,7 +8,7 @@
 declare module "types" {
   export interface WatchData {
     paths: string[];
-    cwd: string;
+    directory: string;
   }
 
   export interface Process {

@@ -26,6 +26,7 @@ export default class FileConfig extends Config {
    */
   constructor(directory: string) {
     this.directory = path.normalize(directory);
+    this.configPath = undefined;
     super();
   }
 
@@ -40,7 +41,7 @@ export default class FileConfig extends Config {
               rejected(new Error("Alloy configuration already exists."));
               return;
             }
-            this.config = {};
+            this._config = {};
             this.configPath = path.join(this.directory, FileConfig.FILENAME);
             this.write().then(config => resolve(config), err => rejected(err));
           },
@@ -59,7 +60,7 @@ export default class FileConfig extends Config {
         if (err) {
           rejected(err);
         } else {
-          this.config = JSON.parse(data);
+          this._config = JSON.parse(data);
           resolve(this);
         }
       });
@@ -71,7 +72,7 @@ export default class FileConfig extends Config {
    */
   public write(): Promise<FileConfig> {
     return new Promise<Config>((resolve, rejected) => {
-      if (!this.config) {
+      if (this._config === undefined) {
         rejected(new Error("Nothing to write."));
       }
       fs.writeFile(this.configPath, this.toString(), (err, data) => {
@@ -91,7 +92,7 @@ export default class FileConfig extends Config {
     return new Promise<boolean>((resolve, rejected) => {
       fs.stat(path.join(directory, FileConfig.FILENAME), (err, stats) => {
         if (err) {
-          if (err.errno === -2) {
+          if (err.code === "ENOENT") { // File not found.
             resolve(false);
           }
           rejected(err);
