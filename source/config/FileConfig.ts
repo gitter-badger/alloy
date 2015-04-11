@@ -60,7 +60,11 @@ export default class FileConfig extends Config {
         if (err) {
           rejected(err);
         } else {
-          this._config = JSON.parse(data);
+          try {
+            this._config = JSON.parse(data);
+          } catch (e) {
+            rejected(e);
+          }
           resolve(this);
         }
       });
