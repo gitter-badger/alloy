@@ -1,7 +1,7 @@
 {
   "name": "alloy",
   "version": "0.0.1",
-  "description": "A Polyglot (any language) HTML Imports-based Module System for Web Components ",
+  "description": "The anti-build system for the Web and Node.",
   "main": "bin/alloy-shell.js",
   "bin": {
     "[]": "bin/alloy-shell.js",
@@ -31,6 +31,7 @@
   },
   "homepage": "https://github.com/makenotion/alloy",
   "dependencies": {
+    "arrify": "^1.0.0",
     "chalk": "^1.0.0",
     "chokidar": "^1.0.0-rc4",
     "commander": "^2.7.1",
