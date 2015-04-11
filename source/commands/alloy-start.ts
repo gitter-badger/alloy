@@ -43,5 +43,7 @@ ServiceUtils.lookupService((results: Process[]): void => {
     } else {
       child_process.fork("./build/source/commands/alloy-service");
     }
+  } else {
+    console.error(chalk.red("Alloy service is already running."));
   }
 });

@@ -10,6 +10,7 @@
     ],
     "files": [
         "./source/alloy.ts",
+        "./source/api/Alloy.ts",
         "./source/commands/alloy-build.ts",
         "./source/commands/alloy-config.ts",
         "./source/commands/alloy-init.ts",
@@ -20,6 +21,7 @@
         "./source/commands/alloy-trace.ts",
         "./source/commands/alloy-watch.ts",
         "./source/config/Config.ts",
+        "./source/config/FileConfig.ts",
         "./source/config/Properties.ts",
         "./source/lib/types.ts",
         "./source/parser/JSLexer.ts",
@@ -34,6 +36,7 @@
         "./typings/chalk/chalk.d.ts",
         "./typings/chokidar/chokidar.d.ts",
         "./typings/commander/commander.d.ts",
+        "./typings/es6-promise/es6-promise.d.ts",
         "./typings/lodash/lodash.d.ts",
         "./typings/node/node.d.ts",
         "./typings/tsd.d.ts",

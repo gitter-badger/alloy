@@ -1,77 +1,51 @@
-import { chalk, fs, path } from "../../vendor/npm";
+import { arrify, path, ramda as R } from "../../vendor/npm";
 import Properties from "../config/Properties";
 
 const CONFIG_FILENAME = ".alloy";
 
 /**
- * Encapsulates functionality for reading and writing to an Alloy
- * configuration file.
+ * Model representing an Alloy configuration. Encapsulates functionality
+ * for working with configurations.
  *
  * @author Joel Ong (joelo@google.com)
- * @copyright 2015 Google Inc
  */
 export default class Config {
-  // Alloy configuration parsed from the config file.
-  // TODO(joeloyj): Use a map instead and convert to JSON when writing to disk.
-  private config: Object;
-  private configPath: string;
-
-  constructor(private directory: string) {}
+  // Alloy configuration.
+  protected _config: Object;
 
   /**
-   * Creates an alloy config for the current directory.
+   * @param config Optional config to load, this could be either a JSON string
+   *     or a compatible object.
    */
-  public create(): Config {
-    if (Config.hasConfig(this.directory)) {
-      throw new Error("Alloy configuration already exists.");
+  constructor(config?: string|Object) {
+    if (config === undefined) {
+      this._config = {};
+      return;
     }
-    this.config = {};
-    this.configPath = path.join(this.directory, CONFIG_FILENAME);
-    return this;
-  }
-
-  /**
-   * Finds the .alloy config file and retrieves the current configuration.
-   */
-  public read(): Config {
-    // TODO(joeloyj): Check all parent directories for config file.
-    this.configPath = path.join(this.directory, CONFIG_FILENAME);
-    this.config = JSON.parse(
-        fs.readFileSync(this.configPath, { encoding: "utf8" }));
-    return this;
-  }
-
-  /**
-   * Writes the current configuration to the .alloy config file.
-   */
-  public write(): Config {
-    if (!this.config) {
-      throw new Error("Nothing to write.");
-    }
-    fs.writeFileSync(this.configPath, this.toString());
-    return this;
-  }
-
-  /**
-   * Return the list of paths watched by this Alloy configuration.
-   */
-  public getPaths(): string[] {
-    if (this.isConfigured(Properties.SOURCES)) {
-      return this.getList(Properties.SOURCES);
+    if (typeof config === "string") {
+      this._config = JSON.parse(config);
     } else {
-      return [];
+      this._config = JSON.parse(JSON.stringify(config));
     }
+    let dedupeIfList = (value) => {
+      return Array.isArray(value) ? R.uniq(value) : value;
+    }
+    this._config = R.evolve(dedupeIfList, this._config);
+    Config.validate(this._config);
+  }
+
+  /**
+   * Return the list of source paths watched by this Alloy configuration.
+   */
+  public getSources(): string[] {
+    return arrify(this.getList(Properties.SOURCES));
   }
 
   /**
    * Return the list of paths excluded from this Alloy configuration.
    */
   public getExcluded(): string[] {
-    if (this.isConfigured(Properties.EXCLUDE)) {
-      return this.getList(Properties.EXCLUDE);
-    } else {
-      return [];
-    }
+    return arrify(this.getList(Properties.EXCLUDE));
   }
 
   /**
@@ -79,7 +53,24 @@ export default class Config {
    */
   public isConfigured(property: string): boolean {
     Properties.validate(property);
-    return this.config.hasOwnProperty(property);
+    return R.has(property, this._config);
+  }
+
+  /**
+   * Deletes the given property.
+   */
+  public delete(property: string): Config {
+    Properties.validate(property);
+    this._config = R.dissoc(property, this._config);
+    return this;
+  }
+
+  /**
+   * Returns the value of the given property, which could be a list or an array.
+   */
+  public get(property: string): string|string[] {
+    Properties.validate(property);
+    return R.clone(this._config[property]);
   }
 
   /**
@@ -87,7 +78,7 @@ export default class Config {
    */
   public getString(property: string): string {
     Properties.validateString(property);
-    return this.config[property];
+    return this._config[property];
   }
 
   /**
@@ -96,31 +87,28 @@ export default class Config {
    */
   public getList(property: string): string[] {
     Properties.validateList(property);
-
-    return this.config[property];
+    return R.clone(this._config[property]);
   }
 
   /**
    * Sets a property to the given string value.
    */
   public setString(property: string, value: string): Config {
-    Properties.validateString(property);
-    if (!this.config) {
-      this.config = {};
-    }
-    this.config[property] = value;
+    Properties.validateString(property, value);
+    this._config = R.assoc(property, value, this._config);
     return this;
   }
 
   /**
    * Sets a list property to the given array of strings.
    */
-  public setList(property: string, value: string[]): Config {
-    Properties.validateList(property);
-    if (!this.config) {
-      this.config = {};
+  public setList(property: string, value: string|string[]): Config {
+    Properties.validateList(property, value);
+    if (typeof value === "string") {
+      this._config = R.assoc(property, JSON.parse(value), this._config);
+    } else {
+      this._config = R.assoc(property, R.clone(value), this._config);
     }
-    this.config[property] = value;
     return this;
   }
 
@@ -129,10 +117,8 @@ export default class Config {
    */
   public contains(property: string, value: string): boolean {
     Properties.validateList(property);
-    if (!this.config || !this.config.hasOwnProperty(property)) {
-      return false;
-    }
-    return this.config[property].indexOf(value) >= 0;
+    return R.has(property, this._config)
+        && R.contains(value, this._config[property]);
   }
 
   /**
@@ -140,25 +126,20 @@ export default class Config {
    */
   public add(property: string, value: string): Config {
     Properties.validateList(property);
-    if (!this.config) {
-      this.config = {};
-    }
-    if (!this.config.hasOwnProperty(property)) {
-      this.config[property] = [];
-    }
-    if (!this.contains(property, value)) {
-      this.config[property].push(value);
-    }
+    let newArr = R.append(value, this._config[property]);
+    this._config = R.assoc(property, R.uniq(newArr), this._config);
     return this;
   }
 
   /**
-   * Deletes the given property.
+   * Removes a string value from a given list property.
    */
-  public delete(property: string): Config {
-    Properties.validate(property);
-    if (this.config.hasOwnProperty(property)) {
-      delete this.config[property];
+  public remove(property: string, value: string): Config {
+    Properties.validateList(property);
+    if (this.contains(property, value)) {
+      let arr = this._config[property];
+      arr = R.remove(R.indexOf(value, arr), 1, arr);
+      this._config = R.assoc(property, arr, this._config);
     }
     return this;
   }
@@ -166,30 +147,41 @@ export default class Config {
   /**
    * Returns an object representing this config.
    */
-  public getConfig(): Object {
-    return this.config;
+  public get config(): Object {
+    return JSON.parse(this.toString());
   }
 
   /**
    * Returns a string representation of this configuration in formatted JSON.
    */
   public toString(): string {
-    return JSON.stringify(this.config, null, 2);
+    return JSON.stringify(this._config, undefined, 2);
   }
 
   /**
-   * Returns true if there is an Alloy configuration for the given directory.
+   * Validates the given Alloy configuration.
    */
-  public static hasConfig(directory: string): boolean {
-    // TODO(joeloyj): Check all parent directories for config file.
-    try {
-      fs.statSync(path.join(directory, CONFIG_FILENAME));
-      return true;
-    } catch (e) {
-      if (e.errno === -2) {
-        return false;
+  public static validate(
+      config: string|Object, onError?: (err: Error) => void) {
+    let configObj: Object;
+    if (typeof config === "string") {
+      try {
+        configObj = JSON.parse(config);
+      } catch (e) {
+        if (onError) onError(e);
+        else throw e;
       }
-      throw e;
+    } else {
+      configObj = config;
+    }
+
+    try {
+      for (let property of Object.keys(configObj)) {
+        Properties.validate(configObj[property]);
+      }
+    } catch (e) {
+      if (onError) onError(e);
+      else throw e;
     }
   }
 }
