@@ -16,8 +16,8 @@
     "alloy-watch": "bin/watch.js"
   },
   "scripts": {
-    "preinstall": "command -v tsc >/dev/null || { echo 'You must install TypeScript before installing Alloy (try npm i -g typescript).'; exit 1; }",
-    "install": "tsc",
+    "preinstall": "command -v tsc >/dev/null || { echo 'You must install TypeScript before installing Alloy (try npm i -g typescript).'; exit 1; }; command -v tsc >/dev/null || { echo 'You must install TypeScript Definition Manager before installing Alloy (try npm i -g tsd@next).'; exit 1; }",
+    "install": "tsd update; tsc;",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
