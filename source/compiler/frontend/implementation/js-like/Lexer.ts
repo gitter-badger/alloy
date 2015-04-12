@@ -1,9 +1,10 @@
-import { MatchTokens, Token } from "./Tokens";
-import { Lexer } from "./Lexer";
+import { token } from "../../token";
+import { tokens } from "../../tokens";
+import { lexer } from "../../lexer";
 
 /*
 
-JSLexer.ts
+js-line/Lexer.ts
 
 Created by Chris Prucha
 © 2015 Notion Labs, Inc
@@ -12,17 +13,17 @@ Provide declarative tokens for the lexer to analyze.
 
 */
 
-export class JSLexer implements Lexer {
+export class Lexer implements lexer {
 
 	// Inject tokens on creation
-	constructor(private tokens: MatchTokens) {}
+	constructor(private tokens: tokens) {}
 
 	// Public
-	public generateTokens(code: string):Token[] {
+	public generateTokens(code: string):token[] {
 		let partialToken: string   = "";
 		let inName      : boolean  = false;
 		let inString    : boolean  = false;
-		let outputTokens: Token[]  = [];
+		let outputTokens: token[]  = [];
 
 		for (let character of code) {
 			partialToken += character;
@@ -98,7 +99,7 @@ export class JSLexer implements Lexer {
 		throw new Error(`No matched token type: ${partialToken}`);
 	}
 
-	private tokenTypes(tokens: MatchTokens): string[][] {
+	private tokenTypes(tokens: tokens): string[][] {
 		return [tokens.names, tokens.operators];
 	}
 
@@ -138,7 +139,7 @@ export class JSLexer implements Lexer {
 		return !!parseInt(partialToken, 10);
 	}
 
-	private createToken(tokenType: string, tokenValue: string):Token {
+	private createToken(tokenType: string, tokenValue: string):token {
 		return {
 			"type" : tokenType,
 			"value": tokenValue

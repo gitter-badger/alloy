@@ -1,8 +1,8 @@
-import { MatchTokens } from "./Tokens"
+import { tokens } from "../../tokens"
 
 /*
 
-JSTokens.ts
+js-like/Tokens.ts
 
 Created by Chris Prucha
 © 2015 Notion Labs, Inc
@@ -31,7 +31,7 @@ ES6 RC3 Module System Examples:
 
 */
 
-export const JSTokens: MatchTokens = {
+export const Tokens: tokens = {
 	"names" : [
 		"export",
 		"import",
@@ -46,7 +46,7 @@ export const JSTokens: MatchTokens = {
 		",",
 		";"
 	],
-	"token_delimiters": [" "],
+	"token_delimiters": [" ", "\n", "\r"],
 	"string_delimiters": [
 		"`",
 		"'",

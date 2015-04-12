@@ -5,18 +5,13 @@ Tokens.ts
 Created by Chris Prucha
 © 2015 Notion Labs, Inc
 
-Interfaces for token matching.
+Interface for declarative token matching.
 
 */
 
-export interface MatchTokens {
+export interface tokens {
 	names            : string[];
 	operators        : string[];
 	token_delimiters : string[];
 	string_delimiters: string[];
-}
-
-export interface Token {
-	type: string;
-	value: string;
 }

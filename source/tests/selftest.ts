@@ -1,8 +1,13 @@
-import { JSTokens } from "../parser/JSTokens";
-import { JSLexer }  from "../parser/JSLexer";
+import { Tokens } from "../compiler/frontend/implementation/js-like/Tokens";
+import { Lexer }  from "../compiler/frontend/implementation/js-like/Lexer";
 
 export let selftest = ():void => {
 
   // Simple Lexer test
-  console.log(new JSLexer(JSTokens).generateTokens(`import { Lexer } from "./parser/lexer"`));
+  console.log(new Lexer(Tokens).generateTokens(`
+    import { Lexer } from "./parser/lexer";
+
+    console.log(Lexer);
+
+  `));
 }
