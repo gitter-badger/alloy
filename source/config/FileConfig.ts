@@ -1,5 +1,5 @@
 import { Promise } from "es6-promise";
-import { path } from "../../vendor/npm";
+import { path as sysPath } from "../../vendor/npm";
 import * as fs from "fs"
 import Config from "./Config";
 
@@ -25,50 +25,46 @@ export default class FileConfig extends Config {
    *     loaded, or where one should be created if it doesn't exist yet.
    */
   constructor(directory: string) {
-    this.directory = path.normalize(directory);
+    this.directory = sysPath.normalize(directory);
     this.configPath = undefined;
     super();
   }
 
   /**
    * Creates an empty Alloy configuration for the current directory.
+   * The resulting promise will be rejected if there is already a .alloy
+   * configuration for the directory.
    */
   public create(): Promise<FileConfig> {
     return new Promise<Config>((resolve, rejected) => {
-      FileConfig.hasConfig(this.directory).then(
-          hasConfig => {
+      FileConfig.hasConfig(this.directory)
+          .then(hasConfig => {
             if (hasConfig) {
               rejected(new Error("Alloy configuration already exists."));
               return;
             }
             this._config = {};
-            this.configPath = path.join(this.directory, FileConfig.FILENAME);
+            this.configPath = sysPath.join(this.directory, FileConfig.FILENAME);
             this.write().then(config => resolve(config), err => rejected(err));
-          },
-          err => rejected(err));
+          })
+          .catch(err => rejected(err));
     });
   }
 
   /**
-   * Finds the .alloy config file and retrieves the current configuration.
+   * Retrieves Alloy configuration associated with the current directory.
+   * This is stored as a .alloy config file in the directory or any of its
+   * ancestor directories.
    */
   public read(): Promise<FileConfig> {
-    // TODO(joeloyj): Check all parent directories for config file.
-    this.configPath = path.join(this.directory, FileConfig.FILENAME);
     return new Promise<Config>((resolve, rejected) => {
-      fs.readFile(this.configPath, { encoding: "utf8" }, (err, data) => {
-        if (err) {
-          rejected(err);
-        } else {
-          try {
-            this._config = JSON.parse(data);
-          } catch (e) {
-            rejected(e);
-          }
-          resolve(this);
-        }
+      this.readRecursive(this.directory)
+          .then((result) => {
+            this._config = result;
+            resolve(this);
+          })
+          .catch((err) => rejected(err));
       });
-    });
   }
 
   /**
@@ -89,19 +85,70 @@ export default class FileConfig extends Config {
   }
 
   /**
-   * Returns true if there is an Alloy configuration for the given directory.
+   * Returns true if there is an Alloy configuration for the given directory,
+   * meaning the directory or any of it's ancestor directories have a .alloy
+   * config file.
    */
   public static hasConfig(directory: string): Promise<boolean> {
-    // TODO(joeloyj): Check all parent directories for config file.
+    directory = sysPath.normalize(directory);
     return new Promise<boolean>((resolve, rejected) => {
-      fs.stat(path.join(directory, FileConfig.FILENAME), (err, stats) => {
-        if (err) {
-          if (err.code === "ENOENT") { // File not found.
-            resolve(false);
-          }
-          rejected(err);
+      fs.stat(sysPath.join(directory, FileConfig.FILENAME), (err, stats) => {
+        if (!err) {
+          // Found the file.
+          resolve(true);
+          return;
         }
-        resolve(true);
+
+        // Got a file stat error.
+        if (err.code !== "ENOENT") {
+          // Got a stat error other than file not found.
+          rejected(err);
+          return;
+        }
+        // File not found, we must go deeper (shallower, actually).
+        if (directory === "/") {
+          // Already at top level directory, meaning no config was found.
+          resolve(false);
+          return;
+        }
+        // Recurse on parent directory.
+        this.hasConfig(sysPath.normalize(`${directory}/..`))
+            .then((result) => resolve(result))
+            .catch((err) => rejected(err));
+      });
+    });
+  }
+
+  // Looks for the alloy config file by looking in the given directory and
+  // recursively traverses up the directory tree until it is found.
+  private readRecursive(directory: string): Promise<Object> {
+    directory = sysPath.normalize(directory);
+    let configPath: string = sysPath.join(directory, FileConfig.FILENAME);
+    return new Promise<Object>((resolve, rejected) => {
+      fs.readFile(configPath, { encoding: "utf8" }, (err, data) => {
+        if (err) {
+          if (err.code !== "ENOENT") {
+            // Got a stat error other than file not found.
+            rejected(err);
+            return;
+          }
+          // File not found, we must go deeper (shallower, actually).
+          if (directory === "/") {
+            // Already at top level directory.
+            rejected(err);
+            return;
+          }
+          // Recurse on parent directory.
+          this.readRecursive(sysPath.normalize(`${directory}/..`))
+              .then((result) => resolve(result))
+              .catch((err) => rejected(err));
+        } else {
+          try {
+            resolve(JSON.parse(data));
+          } catch (e) {
+            rejected(e);
+          }
+        }
       });
     });
   }
