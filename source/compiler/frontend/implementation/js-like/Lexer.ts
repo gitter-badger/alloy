@@ -1,6 +1,6 @@
-import { token } from "../../token";
+import { token }  from "../../token";
 import { tokens } from "../../tokens";
-import { lexer } from "../../lexer";
+import { lexer }  from "../../lexer";
 
 /*
 
@@ -21,7 +21,7 @@ export class Lexer implements lexer {
 	// Public
 	public generateTokens(code: string):token[] {
 		let partialToken: string   = "";
-		let inName      : boolean  = false;
+		let inUnknown   : boolean  = false;
 		let inString    : boolean  = false;
 		let outputTokens: token[]  = [];
 
@@ -45,11 +45,14 @@ export class Lexer implements lexer {
 
 				if (this.isTokenDelimiter(character)) {
 
-					// If we are in a name, create the name token and unset inName
+					// If we are in a unknown, create the unknown token and unset inUnknown
 					// as long as the partial token is longer than the delimiter.
-					if (inName && partialToken.length > 1) {
-						outputTokens.push(this.createToken("name", partialToken));
-						inName = false;
+					if (inUnknown && partialToken.length > 1) {
+
+						// Slice off the delimiter
+						let useToken = partialToken.slice(0, partialToken.length - 1)
+						outputTokens.push(this.createToken("unknown", useToken));
+						inUnknown = false;
 					}
 
 					// Ignore token delimiters
@@ -64,13 +67,14 @@ export class Lexer implements lexer {
 
 				} else if (this.isNumber(partialToken)) {
 
-					// Don't support numbers, throw an error
-					throw new Error(`Unexpected token [number]: ${partialToken};`);
+					// Don't support numbers, continue
+					// TODO(Chris): Implement proper number support to detect errors.
+					continue;
 
 				} else {
 
-					// Assume the beginning of a name.
-					inName = true;
+					// Assume the beginning of an unknown.
+					inUnknown = true;
 				}
 			}
 		}
@@ -93,14 +97,14 @@ export class Lexer implements lexer {
 		}
 
 		if (matchedIndex) {
-			return ["name", "operator"][matchedIndex];
+			return ["constant", "operator"][matchedIndex];
 		}
 
 		throw new Error(`No matched token type: ${partialToken}`);
 	}
 
 	private tokenTypes(tokens: tokens): string[][] {
-		return [tokens.names, tokens.operators];
+		return [tokens.constant, tokens.operators];
 	}
 
 	private isMatchToken(partialToken: string): boolean {

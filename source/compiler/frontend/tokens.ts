@@ -10,7 +10,7 @@ Interface for declarative token matching.
 */
 
 export interface tokens {
-	names            : string[];
+	constant         : string[];
 	operators        : string[];
 	token_delimiters : string[];
 	string_delimiters: string[];

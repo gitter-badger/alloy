@@ -31,8 +31,8 @@ ES6 RC3 Module System Examples:
 
 */
 
-export const Tokens: tokens = {
-	"names" : [
+export const TOKENS: tokens = {
+	"constant" : [
 		"export",
 		"import",
 		"from",
@@ -46,7 +46,7 @@ export const Tokens: tokens = {
 		",",
 		";"
 	],
-	"token_delimiters": [" ", "\n", "\r"],
+	"token_delimiters" : [" ", "\n", "\r"],
 	"string_delimiters": [
 		"`",
 		"'",
