@@ -2,7 +2,7 @@ import { token }  from "../../token";
 import { tokens } from "../../tokens";
 import { lexer }  from "../../lexer";
 
-import { default as isValidNameRegex } from "./match_es5.1_name";
+import { default as isValidNameRegex } from "./match_es6_name";
 
 /*
 
