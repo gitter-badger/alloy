@@ -49,21 +49,21 @@ let ir = [
 
 // TODO(Chris): Create more rigid types
 // once the schema is more defined.
-interface import_declaration {
+export interface import_declaration {
 	type: string;
 	module: Object;
 	declarations: Object;
 }
 
-interface unparsed {
+export interface unparsed {
 	type: string;
 	text: string;
 }
 
-interface export_declaration {
+export interface export_declaration {
 	type: string;
 	default: Object;
 	properties: Object;
 }
 
-export interface irtree extends Array<import_declaration|unparsed|export_declaration> {}
+export interface ir extends Array<import_declaration|unparsed|export_declaration> {}
