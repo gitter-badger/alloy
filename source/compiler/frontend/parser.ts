@@ -1,4 +1,4 @@
-import { ast } from "../intermediate/ast";
+import { ir } from "../intermediate/ir";
 
 /*
 
@@ -7,10 +7,10 @@ parser.ts
 Created by Chris Prucha
 © 2015 Notion Labs, Inc
 
-Generate an ast from a list of tokens.
+Generate an ir from a list of tokens.
 
 */
 
 export interface parser {
-	parse(code: string): ast;
+	parse(code: string): ir|Error;
 }
