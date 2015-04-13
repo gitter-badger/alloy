@@ -1,6 +1,6 @@
 import { FSWatcher } from "fs";
 import { Process } from "types";
-import { chalk, child_process, commander } from "../../vendor/npm";
+import { arrify, chalk, child_process, commander } from "../../vendor/npm";
 import ServiceUtils from "../service/ServiceUtils";
 
 /**
@@ -35,13 +35,13 @@ ServiceUtils.lookupService((results: Process[]): void => {
     if (commander.background) {
       console.info(chalk.yellow("Starting Alloy service in background..."));
       let service = child_process.spawn("node",
-          ["./build/source/commands/alloy-service"], {
+          arrify(ServiceUtils.getServiceExec()), {
             // TODO(joeloyj): Log to file.
             stdio: [ 'ignore', 'ignore', 'ignore' ]
           });
       service.unref();
     } else {
-      child_process.fork("./build/source/commands/alloy-service");
+      child_process.fork(ServiceUtils.getServiceExec());
     }
   } else {
     console.error(chalk.red("Alloy service is already running."));

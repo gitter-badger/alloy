@@ -1,4 +1,5 @@
-import { path as sysPath, ramda as R } from "../../vendor/npm";
+import { child_process, path as sysPath, ramda as R } from "../../vendor/npm";
+import Builder from "../builder/Builder";
 import BuildWatcher from "../service/BuildWatcher";
 import Config from "../config/Config";
 import Properties from "../config/Properties";
@@ -18,6 +19,7 @@ export enum Status {
  */
 export default class Alloy {
   private _status: Status;
+  private builder: Builder;
   private config: Config;
   private directory: string;
   private watcher: BuildWatcher;
@@ -30,17 +32,18 @@ export default class Alloy {
    */
   constructor(config: Config|Object|string, directory: string) {
     this._status = Status.STOPPED;
+    this.builder = new Builder(undefined);
     this.directory = sysPath.normalize(directory);
     this.watcher = undefined;
+
     this.setConfig(config);
   }
 
   /**
    * Performs a build with the current Alloy configuration.
    */
-  public build(): void {
-    // TODO(joeloyj): Implement.
-    throw new Error("Not implemented.");
+  public build(): Promise<void> {
+    return this.builder.build();
   }
 
   /**
@@ -70,7 +73,7 @@ export default class Alloy {
    */
   public start(): void {
     if (this.watcher === undefined) {
-      this.watcher = new BuildWatcher();
+      this.watcher = new BuildWatcher(this.builder);
     }
     this._status = Status.STARTED;
     let sources: string[] = this.config.getSources();
@@ -181,5 +184,6 @@ export default class Alloy {
     } else {
       this.config = new Config(config);
     }
+    this.builder.config = this.config;
   }
 }

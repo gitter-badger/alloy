@@ -41,7 +41,7 @@ lookupService((results: Process[]): void => {
   if (results.length === 0) {
     console.info(
         chalk.yellow("Alloy service is not running, starting service..."));
-    child_process.fork("./build/source/commands/alloy-service", commander.args);
+    child_process.fork(ServiceUtils.getServiceExec(), commander.args);
     return;
   }
 

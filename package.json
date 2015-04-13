@@ -9,6 +9,7 @@
     "alloy-build": "bin/build.js",
     "alloy-config": "bin/config.js",
     "alloy-init": "bin/init.js",
+    "alloy-service": "bin/service.js",
     "alloy-start": "bin/start.js",
     "alloy-status": "bin/status.js",
     "alloy-stop": "bin/stop.js",
