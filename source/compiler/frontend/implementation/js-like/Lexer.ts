@@ -39,7 +39,8 @@ export class Lexer implements lexer {
 
 				// If we are in a string, create the string token and unset inString
 				} else {
-					outputTokens.push(this.createToken("string", partialToken));
+					let useToken = partialToken.slice(1, partialToken.length - 1);
+					outputTokens.push(this.createToken("string", useToken));
 					inString = false;
 					partialToken = "";
 				}

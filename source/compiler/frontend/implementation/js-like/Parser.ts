@@ -4,6 +4,7 @@ import { ir } from "../../../intermediate/ir";
 
 import { Lexer }  from "./Lexer";
 import { TOKENS } from "./TOKENS";
+import { token } from "../../token";
 
 import { chalk } from "../../../../../vendor/npm";
 
@@ -61,9 +62,10 @@ export class Parser implements parser {
 		let prefix: string[]   = ["import", "export"];
 		let inImportDeclaration: boolean = false;
 		let inExportDeclaration: boolean = false;
+		let lastToken: token;
 
 		// Print out token debug for now.le
-		console.log(tokens);
+		// console.log(tokens);
 
 		for (let token of tokens) {
 			if (token.type === "constant") {
@@ -86,23 +88,60 @@ export class Parser implements parser {
 
 					ir.push(this.createDeclaration(token));
 
+					// Reset last token
+					lastToken = undefined;
 				} else {
-					console.log("constant", token)
+
+					if (token.value === "from") {
+						if (lastToken.value !== "}" && lastToken.type !== "name") {
+							return this.error(`Unexpected ${lastToken.type} '${lastToken.value}' before constant 'from'!`);
+						}
+						lastToken = token;
+					}
 				}
 			} else {
 				if (inImportDeclaration) {
-					if (token.type === "name") {
-						console.log("name", token)
+					console.log("IN IMPORT")
+					let lastIREntry = <irtypes.import_declaration> ir[ir.length - 1];
+
+					if (token.type === "string") {
+						if (lastToken.value !== "from") {
+							return this.error(`Unexpected string ${token.value} after ${lastToken.type} '${lastToken.value}'`);
+						}
+
+						lastIREntry.module["uri"] = token.value;
+
+						console.log(lastIREntry)
+						inImportDeclaration = false;
+
+					} else if (token.type === "name") {
+						console.log("IN NAME")
+
+						if (lastToken && lastToken.type !== "delimiter" && lastToken.value !== "{" && lastToken.value !== ",") {
+							return this.error(`Unexpected ${lastToken.type} '${lastToken.value}' before name '${token.value}'!`);
+						}
+
+						lastIREntry.declarations[token.value] = {
+							property: token.value
+						};
+
+						console.log(lastIREntry.declarations)
 
 					} else if (token.type === "operator") {
-						if (token.value === "*") {
-							console.log("*", token)
-
-						} else if (token.value === "{") {
-							console.log("{", token)
-
+						console.log("IN OPERATOR", token.value)
+						if (token.value === "}") {
+							if (!lastToken || lastToken.type !== "name") {
+								return this.error(`Unexpected }, expected type 'name'!`);
+							}
 						}
 					}
+				} else {
+					console.log("OUT OF IMPORT")
+				}
+
+				// Ignore delimiters
+				if (token.type !== "delimiter") {
+					lastToken = token;
 				}
 			}
 		}
@@ -120,9 +159,7 @@ export class Parser implements parser {
 						type: "uri",
 						uri : undefined
 					},
-					declarations: {
-						default: undefined
-					}
+					declarations: {}
 			};
 
 		} else if (token.value === "export") {
