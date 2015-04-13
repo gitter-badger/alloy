@@ -8,3 +8,5 @@ Created by Chris Prucha
 Generate alloy runtime module code (commonjs with promises) from an ast.
 
 */
+
+throw new Error("Unimplemented");
