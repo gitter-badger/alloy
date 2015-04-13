@@ -1,6 +1,7 @@
 import { chalk, child_process, chokidar, path as sysPath } from "../../vendor/npm";
 import { FSWatcher } from "fs";
 import * as _ from "lodash";
+import Builder from "../builder/Builder";
 
 const BUILD_DEBOUNCE_MS = 50;
 
@@ -15,7 +16,7 @@ export default class BuildWatcher {
   private isInitialized: boolean;
   private debouncedBuild: () => void;
 
-  constructor() {
+  constructor(private builder: Builder) {
     this.watcher = undefined;
     this.watchList = new Set();
     this.isInitialized = false;
@@ -79,8 +80,6 @@ export default class BuildWatcher {
     this.watcher.close();
   }
 
-  // TODO(joeloyj): Provide mechanism for ignoring files or only watching
-  // a subset of them by regex or alloy configuration.
   /**
    * Initializes the watcher.
    */
@@ -128,9 +127,8 @@ export default class BuildWatcher {
     this.debouncedBuild();
   }
 
-  // TODO(joeloyj): Build from configuration.
   private build(): void {
-    child_process.fork("./build/source/commands/alloy-build");
+    this.builder.build();
   }
 
   private onError(error: string): void {

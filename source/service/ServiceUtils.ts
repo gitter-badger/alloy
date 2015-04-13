@@ -1,5 +1,5 @@
 import { Process } from "types";
-import { chalk, ps } from "../../vendor/npm";
+import { chalk, path, ps } from "../../vendor/npm";
 
 /**
  * Utilities for working with Alloy service.
@@ -23,5 +23,12 @@ export default class ServiceUtils {
         }
         callback(results);
       });
+  }
+
+  /**
+   * Returns the executable path for Alloy service.
+   */
+  public static getServiceExec(): string {
+    return `${path.dirname(process.argv[1])}/alloy-service`;
   }
 }
