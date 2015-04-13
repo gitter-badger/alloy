@@ -31,6 +31,7 @@ ES6 RC3 Module System Examples:
 
 */
 
+// Support and ignore comments
 export const TOKENS: tokens = {
 	"constants" : [
 		"export",
@@ -45,13 +46,17 @@ export const TOKENS: tokens = {
 		"const"
 	],
 	"operators": [
-		";",
+		"(",
+		")",
+		":",
+		".",
 		"*",
 		"{",
 		"}",
 		","
 	],
-	"token_delimiters" : [" ", "\n"],
+	"comment_delimiters": ["//"],
+	"token_delimiters" : [" ", "	", ";", "\n"],
 	"string_delimiters": [
 		"`",
 		"'",
