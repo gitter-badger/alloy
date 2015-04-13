@@ -62,7 +62,8 @@ export class Parser implements parser {
 		let inImportDeclaration: boolean = false;
 		let inExportDeclaration: boolean = false;
 
-		console.log(tokens)
+		// Print out token debug for now.le
+		console.log(tokens);
 
 		for (let token of tokens) {
 			if (token.type === "constant") {

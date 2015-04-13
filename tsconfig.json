@@ -26,7 +26,7 @@
         "./source/compiler/backend/implementation/es6_module.ts",
         "./source/compiler/frontend/implementation/js-like/Lexer.ts",
         "./source/compiler/frontend/implementation/js-like/Parser.ts",
-        "./source/compiler/frontend/implementation/js-like/TOKENS.ts",
+        "./source/compiler/frontend/implementation/js-like/Tokens.ts",
         "./source/compiler/frontend/implementation/js-like/match_es6_name.ts",
         "./source/compiler/frontend/lexer.ts",
         "./source/compiler/frontend/parser.ts",
