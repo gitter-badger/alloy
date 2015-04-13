@@ -11,6 +11,10 @@ export let selftest = ():void => {
     import { x } from "./Foo";
     import { x, y } from "./Foo";
 
+    /*
+      test
+    */
+
 
     // Default
     import y, { x } from "./Foo";
@@ -33,6 +37,8 @@ export let selftest = ():void => {
     export var u = false;
 
     export let x = 2.3;
+
+    var y = 2 * 3;
 
     console.log(Bar, foo, Test);
     console.log(Foo());
