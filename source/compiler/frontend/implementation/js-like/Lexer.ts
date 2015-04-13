@@ -2,6 +2,8 @@ import { token }  from "../../token";
 import { tokens } from "../../tokens";
 import { lexer }  from "../../lexer";
 
+import { default as isValidNameRegex } from "./match_es5.1_name";
+
 /*
 
 js-line/Lexer.ts
@@ -20,10 +22,11 @@ export class Lexer implements lexer {
 
 	// Public
 	public generateTokens(code: string):token[] {
-		let partialToken: string   = "";
-		let inUnknown   : boolean  = false;
-		let inString    : boolean  = false;
-		let outputTokens: token[]  = [];
+		let partialToken : string  = "";
+		let inUnknown    : boolean = false;
+		let inName       : boolean = false;
+		let inString     : boolean = false;
+		let outputTokens : token[] = [];
 
 		for (let character of code) {
 			partialToken += character;
@@ -47,12 +50,14 @@ export class Lexer implements lexer {
 
 					// If we are in a unknown, create the unknown token and unset inUnknown
 					// as long as the partial token is longer than the delimiter.
-					if (inUnknown && partialToken.length > 1) {
+					if ((inUnknown || inName) && partialToken.length > 1) {
 
 						// Slice off the delimiter
 						let useToken = partialToken.slice(0, partialToken.length - 1)
-						outputTokens.push(this.createToken("unknown", useToken));
+						let tokenType =  inName && !inUnknown ? "name" : "unknown";
+						outputTokens.push(this.createToken(tokenType, useToken));
 						inUnknown = false;
+						inName    = false;
 					}
 
 					// Ignore token delimiters
@@ -64,6 +69,9 @@ export class Lexer implements lexer {
 					let tokenType = this.matchTokenType(partialToken);
 					outputTokens.push(this.createToken(tokenType, partialToken));
 					partialToken = "";
+
+				} else if (this.isName(partialToken)) {
+					inName = true
 
 				} else if (this.isNumber(partialToken)) {
 
@@ -104,7 +112,7 @@ export class Lexer implements lexer {
 	}
 
 	private tokenTypes(tokens: tokens): string[][] {
-		return [tokens.constant, tokens.operators];
+		return [tokens.constants, tokens.operators];
 	}
 
 	private isMatchToken(partialToken: string): boolean {
@@ -137,6 +145,10 @@ export class Lexer implements lexer {
 		}
 		return false;
 
+	}
+
+	private isName(partialToken: string): boolean {
+		return isValidNameRegex.test(partialToken);
 	}
 
 	private isNumber(partialToken: string): boolean {

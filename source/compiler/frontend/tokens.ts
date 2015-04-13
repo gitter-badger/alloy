@@ -9,9 +9,10 @@ Interface for declarative token matching.
 
 */
 
+// TODO(Chris): add reserved names
 export interface tokens {
-	constant         : string[];
-	operators        : string[];
-	token_delimiters : string[];
-	string_delimiters: string[];
+	constants              : string[];
+	operators              : string[];
+	token_delimiters       : string[];
+	string_delimiters      : string[];
 }

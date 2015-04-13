@@ -32,21 +32,26 @@ ES6 RC3 Module System Examples:
 */
 
 export const TOKENS: tokens = {
-	"constant" : [
+	"constants" : [
 		"export",
 		"import",
 		"from",
 		"as",
 		"default",
+		"function",
+		"class",
+		"let",
+		"var",
+		"const"
 	],
 	"operators": [
+		";",
 		"*",
 		"{",
 		"}",
-		",",
-		";"
+		","
 	],
-	"token_delimiters" : [" ", "\n", "\r"],
+	"token_delimiters" : [" ", "\n"],
 	"string_delimiters": [
 		"`",
 		"'",

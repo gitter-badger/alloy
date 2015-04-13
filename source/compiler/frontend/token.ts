@@ -10,6 +10,6 @@ Interface for a token.
 */
 
 export interface token {
-	type: string;
-	value: string;
+	type  : string;
+	value : string;
 }
