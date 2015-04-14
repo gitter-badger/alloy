@@ -12,7 +12,7 @@ import { ramda as R } from "../../../vendor/npm";
  * a global identifier.
  */
 enum ModuleType {
-	URI
+  URI
 }
 
 /**
@@ -24,16 +24,16 @@ export interface Element {}
  * IR element that represents an import statement.
  */
 export class ImportElement implements Element {
-	constructor(public module: ImportModule,
-							public declarations: ImportDeclaration[]) {}
+  constructor(public module: ImportModule,
+              public declarations: ImportDeclaration[]) {}
 }
 
 /**
  * IR element that represents an export statement.
  */
 export class ExportElement implements Element {
-	constructor(public properties: Map<string, string>,
-							public defaultProperty?: string) {}
+  constructor(public properties: Map<string, string>,
+              public defaultProperty?: string) {}
 }
 
 /**
@@ -41,15 +41,15 @@ export class ExportElement implements Element {
  * i.e. code that Alloy is not concerned with.
  */
 export class UnparsedElement implements Element {
-	constructor(public text: string) {}
+  constructor(public text: string) {}
 }
 
 /**
  * Represents an import statement's module specification.
  */
 export class ImportModule {
-	constructor(public spec: string,
-							public type: ModuleType) {}
+  constructor(public spec: string,
+              public type: ModuleType) {}
 }
 
 /**
@@ -57,8 +57,8 @@ export class ImportModule {
  * in an import statement.
  */
 export class ImportDeclaration {
-	constructor(public property: string,
-							public alias?: string) {}
+  constructor(public property: string,
+              public alias?: string) {}
 }
 
 // TODO(joeloyj): Remove this after frontend code is refactored.
@@ -67,37 +67,37 @@ export class ImportDeclaration {
  * the canonical form as described in this module.
  */
 export let fromJson = (json: jsonIR.ir|Error): Element[] => {
-	if (json instanceof Error) {
-		throw json;
-	}
+  if (json instanceof Error) {
+    throw json;
+  }
   let adapter = (jsonElem: jsonIR.IRElement): Element => {
     if (jsonElem.type === "import_declaration") {
-			let elem = <jsonIR.import_declaration> jsonElem;
+      let elem = <jsonIR.import_declaration> jsonElem;
 
-			// Convert module spec.
+      // Convert module spec.
       if (elem.module["type"] !== "uri") {
         throw new Error("Encountered unknown type of import.");
       }
       let importModule =
-			  new ImportModule(elem.module["uri"], ModuleType.URI);
+        new ImportModule(elem.module["uri"], ModuleType.URI);
 
-			// Pull out import declarations.
+      // Pull out import declarations.
       let aliasToDeclaration = (alias: string) => {
-				let property = elem.declarations[alias]["property"];
+        let property = elem.declarations[alias]["property"];
         return new ImportDeclaration(property, alias);
       };
       let importDeclarations: ImportDeclaration[] =
           R.map(aliasToDeclaration, R.keys(elem.declarations));
 
-			return new ImportElement(importModule, importDeclarations);
+      return new ImportElement(importModule, importDeclarations);
 
     } else if (jsonElem.type === "export_declaration") {
-			let elem = <jsonIR.export_declaration>jsonElem;
-			let properties = new Map<string, string>();
-			for (let prop of R.keys(elem.properties)) {
-				properties.set(prop, elem.properties[prop]["text"]);
-			}
-			let defaultProperty = elem.properties["default"];
+      let elem = <jsonIR.export_declaration>jsonElem;
+      let properties = new Map<string, string>();
+      for (let prop of R.keys(elem.properties)) {
+        properties.set(prop, elem.properties[prop]["text"]);
+      }
+      let defaultProperty = elem.properties["default"];
       return new ExportElement(properties, defaultProperty);
 
     } else if (jsonElem.type === "unparsed") {
