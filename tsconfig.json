@@ -21,7 +21,7 @@
         "./source/commands/alloy-stop.ts",
         "./source/commands/alloy-trace.ts",
         "./source/commands/alloy-watch.ts",
-        "./source/compiler/backend/codegenerator.ts",
+        "./source/compiler/backend/codegenerator_tmp.ts",
         "./source/compiler/backend/implementation/alloy_runtime_module.ts",
         "./source/compiler/backend/implementation/es6_module.ts",
         "./source/compiler/frontend/implementation/js-like/Lexer.ts",
