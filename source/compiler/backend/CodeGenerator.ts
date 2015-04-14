@@ -1,12 +1,15 @@
-/*
+import * as ir from "../intermediate/ir_oop";
 
-codegenerator.ts
-
-Created by Chris Prucha
-© 2015 Notion Labs, Inc
-
-Generate code from an ast.
-
-*/
-
-throw new Error("Unimplemented");
+/**
+ * Interface for generating code from IR (intermediate representation).
+ * Generated code will have import and export declarations
+ * specific to the module system in use.
+ *
+ * @author Joel Ong (joelo@google.com)
+ */
+export interface CodeGenerator {
+  /**
+   * Generates code from IR.
+   */
+  generate(intermediate: Array<ir.Element>): string;
+}
