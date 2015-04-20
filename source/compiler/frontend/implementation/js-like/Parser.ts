@@ -1,12 +1,10 @@
-import { parser } from "../../parser";
-import * as irtypes from "../../../intermediate/ir";
-import { ir } from "../../../intermediate/ir";
-
-import { Lexer }  from "./Lexer";
-import { TOKENS } from "./TOKENS";
-import { token } from "../../token";
-
 import { chalk } from "../../../../../vendor/npm";
+import { ir } from "../../../intermediate/ir";
+import { parser } from "../../parser";
+import { token } from "../../token";
+import * as irtypes from "../../../intermediate/ir";
+import Lexer  from "./Lexer";
+import TOKENS from "./TOKENS";
 
 /*
 
@@ -52,7 +50,7 @@ Generate an alloy intermediate representation for JS-like languages (JS, TS, etc
 										// 		\n
 
 
-export class Parser implements parser {
+export default class Parser implements parser {
 
 	public parse(code: string): ir|Error {
 		let lexer  = new Lexer(TOKENS);
@@ -165,10 +163,9 @@ export class Parser implements parser {
 		} else if (token.value === "export") {
 			return <irtypes.export_declaration> {
 					type : "export_declaration",
-					default: {
-						text: undefined
-					},
-					properties: {}
+					declarations: {},
+					text: "",
+					module: undefined
 			};
 		}
 	}

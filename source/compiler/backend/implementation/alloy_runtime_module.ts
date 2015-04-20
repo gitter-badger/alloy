@@ -16,6 +16,13 @@ var bar;
 	bar = module.bar;
 }(foo, bar));
 
+alloy.export({
+  name: string,
+  exported: any,
+  default: boolean,
+  type: string (uri, etc)
+  uri: string
+});
 
 */
 

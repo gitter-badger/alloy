@@ -1,6 +1,6 @@
 import { TOKENS } from "../compiler/frontend/implementation/js-like/TOKENS";
-import { Lexer }  from "../compiler/frontend/implementation/js-like/Lexer";
-import { Parser } from "../compiler/frontend/implementation/js-like/Parser";
+import Lexer  from "../compiler/frontend/implementation/js-like/Lexer";
+import Parser from "../compiler/frontend/implementation/js-like/Parser";
 import * as ir from "../compiler/intermediate/ir_oop";
 import * as util  from "util";
 import AlloyCodeGenerator from "../compiler/backend/implementation/AlloyCodeGenerator";

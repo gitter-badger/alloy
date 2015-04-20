@@ -63,3 +63,5 @@ export const TOKENS: tokens = {
 		"\""
 	]
 };
+
+export default TOKENS;
