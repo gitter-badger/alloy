@@ -1,5 +1,4 @@
 import { chalk, commander, package_json } from "../vendor/npm";
-import { selftest } from "./tests/selftest";
 
 /**
  * alloy.js
@@ -38,7 +37,6 @@ commander
   .command("stop", "stop Alloy service")
   .command("trace", "show dependencies within N degrees of a file")
   .command("watch", "watch files using Alloy")
-  .option("-t, --selftest", "run alloy's own unit tests")
   .parse(process.argv);
 
 // Output help by if no command was provided.
@@ -52,6 +50,3 @@ if (commander.args.length && commands.indexOf(commander.args[0]) === -1) {
       "command. See 'alloy --help'.");
   process.exit();
 }
-
-// Route commands to modules
-commander.selftest && selftest();

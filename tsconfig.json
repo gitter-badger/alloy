@@ -9,6 +9,7 @@
         "!./node_modules/**/*.ts"
     ],
     "files": [
+        "./source/__tests__/self_test.ts",
         "./source/alloy.ts",
         "./source/api/Alloy.ts",
         "./source/builder/Builder.ts",
@@ -28,6 +29,8 @@
         "./source/compiler/frontend/implementation/js-like/Lexer.ts",
         "./source/compiler/frontend/implementation/js-like/Parser.ts",
         "./source/compiler/frontend/implementation/js-like/Tokens.ts",
+        "./source/compiler/frontend/implementation/js-like/__tests__/export_test.ts",
+        "./source/compiler/frontend/implementation/js-like/__tests__/import_test.ts",
         "./source/compiler/frontend/implementation/js-like/match_es6_name.ts",
         "./source/compiler/frontend/lexer.ts",
         "./source/compiler/frontend/parser.ts",
@@ -43,7 +46,6 @@
         "./source/service/Client.ts",
         "./source/service/Server.ts",
         "./source/service/ServiceUtils.ts",
-        "./source/tests/selftest.ts",
         "./typings/chalk/chalk.d.ts",
         "./typings/chokidar/chokidar.d.ts",
         "./typings/commander/commander.d.ts",
