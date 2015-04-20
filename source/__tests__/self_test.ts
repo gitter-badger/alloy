@@ -2,7 +2,7 @@ import { ramda as R } from "../../vendor/npm";
 import * as ir from "../compiler/intermediate/ir_oop";
 import * as util from "util";
 import AlloyCodeGenerator from "../compiler/backend/implementation/AlloyCodeGenerator";
-import Parser from "../compiler/frontend/implementation/js-like/Parser";
+import Parser from "../compiler/frontend/implementation/js-like/JSParser";
 
 /**
  * General tests for Alloy.

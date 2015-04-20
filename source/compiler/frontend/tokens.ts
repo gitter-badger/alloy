@@ -10,10 +10,12 @@ Interface for declarative token matching.
 */
 
 // TODO(Chris): add reserved names
-export interface tokens {
+interface tokens {
 	constants              : string[];
 	operators              : string[];
 	comment_delimiters     : string[];
 	token_delimiters       : string[];
 	string_delimiters      : string[];
 }
+
+export default tokens;

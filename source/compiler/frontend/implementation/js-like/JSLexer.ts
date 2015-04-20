@@ -1,8 +1,7 @@
-import { lexer }  from "../../lexer";
-import { token }  from "../../token";
-import { tokens } from "../../tokens";
-
-import { default as isValidNameRegex } from "./match_es6_name";
+import isValidNameRegex from "./match_es6_name";
+import lexer from "../../lexer";
+import token from "../../token";
+import tokens from "../../tokens";
 
 /*
 
@@ -15,7 +14,7 @@ Provide declarative tokens for the lexer to analyze.
 
 */
 
-export default class Lexer implements lexer {
+export default class JSLexer implements lexer {
 
 	// Inject tokens on creation
 	constructor(private tokens: tokens) {}

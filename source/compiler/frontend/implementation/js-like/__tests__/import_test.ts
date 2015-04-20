@@ -1,13 +1,13 @@
 import { ramda as R } from "../../../../../../vendor/npm";
 import * as ir from "../../../../intermediate/ir_oop";
-import Parser from "../Parser";
+import Parser from "../JSParser";
 
 /**
  * Tests that parser can handle all valid ES6 import syxtax.
  *
  * @author Joel Ong (joelo@google.com)
  */
-describe("Parser", () => {
+describe("JS-like parser", () => {
   const URI = "./Foo";
 
   let parse = (code) => {

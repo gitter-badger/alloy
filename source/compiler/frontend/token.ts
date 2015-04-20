@@ -9,7 +9,9 @@ Interface for a token.
 
 */
 
-export interface token {
+interface token {
 	type  : string;
 	value : string;
 }
+
+export default token;

@@ -1,10 +1,10 @@
 import { chalk } from "../../../../../vendor/npm";
 import { ir } from "../../../intermediate/ir";
-import { parser } from "../../parser";
-import { token } from "../../token";
 import * as irtypes from "../../../intermediate/ir";
-import Lexer  from "./Lexer";
-import TOKENS from "./TOKENS";
+import Lexer  from "./JSLexer";
+import TOKENS from "./JSTokens";
+import parser from "../../parser";
+import token from "../../token";
 
 /*
 
@@ -49,8 +49,7 @@ Generate an alloy intermediate representation for JS-like languages (JS, TS, etc
 										// 		;
 										// 		\n
 
-
-export default class Parser implements parser {
+export default class JSParser implements parser {
 
 	public parse(code: string): ir|Error {
 		let lexer  = new Lexer(TOKENS);
