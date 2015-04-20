@@ -1,4 +1,4 @@
-import tokens from "../../tokens"
+import Tokens from "../../Tokens"
 
 /*
 
@@ -32,7 +32,7 @@ ES6 RC3 Module System Examples:
 */
 
 // Support and ignore comments
-export const TOKENS: tokens = {
+export const TOKENS: Tokens = {
 	"constants" : [
 		"export",
 		"import",

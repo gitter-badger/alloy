@@ -11,8 +11,8 @@ Generate an ir from a list of tokens.
 
 */
 
-interface parser {
+interface Parser {
 	parse(code: string): ir|Error;
 }
 
-export default parser;
+export default Parser;

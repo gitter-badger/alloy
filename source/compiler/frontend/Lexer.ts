@@ -1,4 +1,4 @@
-import token from "./token";
+import Token from "./Token";
 
 /*
 
@@ -11,8 +11,8 @@ Generate a list of tokens.
 
 */
 
-interface lexer {
-	generateTokens(code: string): token[];
+interface Lexer {
+	generateTokens(code: string): Token[];
 }
 
-export default lexer;
+export default Lexer;

@@ -1,7 +1,7 @@
 import isValidNameRegex from "./match_es6_name";
-import lexer from "../../lexer";
-import token from "../../token";
-import tokens from "../../tokens";
+import Lexer from "../../Lexer";
+import Token from "../../Token";
+import Tokens from "../../Tokens";
 
 /*
 
@@ -14,18 +14,18 @@ Provide declarative tokens for the lexer to analyze.
 
 */
 
-export default class JSLexer implements lexer {
+export default class JSLexer implements Lexer {
 
 	// Inject tokens on creation
-	constructor(private tokens: tokens) {}
+	constructor(private tokens: Tokens) {}
 
 	// Public
-	public generateTokens(code: string):token[] {
+	public generateTokens(code: string): Token[] {
 		let partialToken : string  = "";
 		let inUnknown    : boolean = false;
 		let inName       : boolean = false;
 		let inString     : boolean = false;
-		let outputTokens : token[] = [];
+		let outputTokens : Token[] = [];
 
 		for (let character of code) {
 			partialToken += character;
@@ -125,7 +125,7 @@ export default class JSLexer implements lexer {
 		throw new Error(`No matched token type: ${partialToken}`);
 	}
 
-	private tokenTypes(tokens: tokens): string[][] {
+	private tokenTypes(tokens: Tokens): string[][] {
 		return [tokens.constants, tokens.operators];
 	}
 
@@ -174,7 +174,7 @@ export default class JSLexer implements lexer {
 		return isValidNameRegex.test(partialToken);
 	}
 
-	private createToken(tokenType: string, tokenValue: string):token {
+	private createToken(tokenType: string, tokenValue: string): Token {
 		return {
 			"type" : tokenType,
 			"value": tokenValue
