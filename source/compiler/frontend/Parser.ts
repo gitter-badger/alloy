@@ -1,4 +1,4 @@
-import { ir } from "../intermediate/ir";
+import * as ir from "../intermediate/ir_oop";
 
 /*
 
@@ -12,7 +12,7 @@ Generate an ir from a list of tokens.
 */
 
 interface Parser {
-	parse(code: string): ir|Error;
+	parse(code: string): ir.Element[];
 }
 
 export default Parser;

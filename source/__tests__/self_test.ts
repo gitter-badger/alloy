@@ -15,7 +15,7 @@ describe("Alloy", () => {
   }
 
   let parseStatement = (code) => {
-    return ir.fromJson(parse(code))[0];
+    return parse(code)[0];
   }
 
   let codegen = (ir) => {

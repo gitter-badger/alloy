@@ -15,7 +15,7 @@ describe("JS-like parser", () => {
   }
 
   let parseStatement = (code) => {
-    return ir.fromJson(parse(code))[0];
+    return parse(code)[0];
   }
 
   let assert = (statement: string, properties: Object) => {

@@ -1,6 +1,5 @@
+import { Declaration, Element, ExportElement, ImportElement, Module, ModuleType } from "../../../intermediate/ir_oop";
 import { chalk } from "../../../../../vendor/npm";
-import { ir } from "../../../intermediate/ir";
-import * as irtypes from "../../../intermediate/ir";
 import Lexer  from "./JSLexer";
 import Parser from "../../Parser";
 import TOKENS from "./JSTokens";
@@ -51,10 +50,10 @@ Generate an alloy intermediate representation for JS-like languages (JS, TS, etc
 
 export default class JSParser implements Parser {
 
-	public parse(code: string): ir|Error {
+	public parse(code: string): Element[] {
 		let lexer  = new Lexer(TOKENS);
 		let tokens = lexer.generateTokens(code);
-		let ir: ir = [];
+		let result: Element[] = [];
 
 		let prefix: string[]   = ["import", "export"];
 		let inImportDeclaration: boolean = false;
@@ -71,9 +70,9 @@ export default class JSParser implements Parser {
 					// Guard
 					if (inImportDeclaration || inExportDeclaration) {
 						if (inImportDeclaration) {
-							return this.error("Export declaration started before import declaration finished!");
+							throw this.error("Export declaration started before import declaration finished!");
 						} else {
-							return this.error("Import declaration started before import declaration finished!");
+							throw this.error("Import declaration started before import declaration finished!");
 						}
 					} else {
 						if (token.value === "import") {
@@ -83,7 +82,7 @@ export default class JSParser implements Parser {
 						}
 					}
 
-					ir.push(this.createDeclaration(token));
+					result.push(this.createDeclaration(token));
 
 					// Reset last token
 					lastToken = undefined;
@@ -91,7 +90,7 @@ export default class JSParser implements Parser {
 
 					if (token.value === "from") {
 						if (lastToken.value !== "}" && lastToken.type !== "name") {
-							return this.error(`Unexpected ${lastToken.type} '${lastToken.value}' before constant 'from'!`);
+							throw this.error(`Unexpected ${lastToken.type} '${lastToken.value}' before constant 'from'!`);
 						}
 						lastToken = token;
 					}
@@ -99,14 +98,14 @@ export default class JSParser implements Parser {
 			} else {
 				if (inImportDeclaration) {
 					console.log("IN IMPORT")
-					let lastIREntry = <irtypes.import_declaration> ir[ir.length - 1];
+					let lastIREntry = <ImportElement> result[result.length - 1];
 
 					if (token.type === "string") {
 						if (lastToken.value !== "from") {
-							return this.error(`Unexpected string ${token.value} after ${lastToken.type} '${lastToken.value}'`);
+							throw this.error(`Unexpected string ${token.value} after ${lastToken.type} '${lastToken.value}'`);
 						}
 
-						lastIREntry.module["uri"] = token.value;
+						lastIREntry.module.spec = token.value;
 
 						console.log(lastIREntry)
 						inImportDeclaration = false;
@@ -115,12 +114,10 @@ export default class JSParser implements Parser {
 						console.log("IN NAME")
 
 						if (lastToken && lastToken.type !== "delimiter" && lastToken.value !== "{" && lastToken.value !== ",") {
-							return this.error(`Unexpected ${lastToken.type} '${lastToken.value}' before name '${token.value}'!`);
+							throw this.error(`Unexpected ${lastToken.type} '${lastToken.value}' before name '${token.value}'!`);
 						}
 
-						lastIREntry.declarations[token.value] = {
-							property: token.value
-						};
+						lastIREntry.declarations.push(new Declaration(token.value, token.value));
 
 						console.log(lastIREntry.declarations)
 
@@ -128,7 +125,7 @@ export default class JSParser implements Parser {
 						console.log("IN OPERATOR", token.value)
 						if (token.value === "}") {
 							if (!lastToken || lastToken.type !== "name") {
-								return this.error(`Unexpected }, expected type 'name'!`);
+								throw this.error(`Unexpected }, expected type 'name'!`);
 							}
 						}
 					}
@@ -143,29 +140,18 @@ export default class JSParser implements Parser {
 			}
 		}
 
-		return ir;
+		return result;
 	}
 
 	private advance() {}
 
-	private createDeclaration(token): irtypes.import_declaration|irtypes.export_declaration {
+	private createDeclaration(token): Element {
 		if (token.value === "import") {
-			return <irtypes.import_declaration> {
-					type : "import_declaration",
-					module: {
-						type: "uri",
-						uri : undefined
-					},
-					declarations: {}
-			};
+			let mod = new Module(undefined, ModuleType.URI);
+			return new ImportElement(mod, []);
 
 		} else if (token.value === "export") {
-			return <irtypes.export_declaration> {
-					type : "export_declaration",
-					declarations: {},
-					text: "",
-					module: undefined
-			};
+			return new ExportElement([], "");
 		}
 	}
 
