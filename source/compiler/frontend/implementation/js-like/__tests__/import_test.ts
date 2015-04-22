@@ -67,8 +67,10 @@ describe("JS-like parser", () => {
     assert(`import x, {} from "${URI}";`, { x: "default" });
     assert(`import x, { y } from "${URI}";`, { x: "default", y: "y" });
     assert(`import x, { y, } from "${URI}";`, { x: "default", y: "y" });
-    assert(`import x, { y, z } from "${URI}";`, { x: "default", z: "z" });
-    assert(`import x, { y, z, } from "${URI}";`, { x: "default", z: "z" });
+    assert(`import x, { y, z } from "${URI}";`,
+        { x: "default", y: "y", z: "z" });
+    assert(`import x, { y, z, } from "${URI}";`,
+        { x: "default", y: "y", z: "z" });
   });
 
   it("parses imports with default binding followed by renamed imports", () => {

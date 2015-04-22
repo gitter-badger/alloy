@@ -3,16 +3,15 @@ import Lexer from "../../Lexer";
 import Token from "../../Token";
 import Tokens from "../../Tokens";
 
-/*
+/**
+ * Provides declarative tokens for the lexer to analyze.
+ *
+ * @author Chris Prucha (chris@makenotion.com)
+ * @author Joel Ong (joelo@google.com)
+ */
 
-js-like/Lexer.ts
-
-Created by Chris Prucha
-© 2015 Notion Labs, Inc
-
-Provide declarative tokens for the lexer to analyze.
-
-*/
+// BUG(icetraxx,joeloyj): Handle escaped string delimiters in strings.
+// BUG(icetraxx,joeloyj): Handle line breaks in template strings.
 
 export default class JSLexer implements Lexer {
 

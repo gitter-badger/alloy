@@ -38,26 +38,21 @@ describe("Alloy", () => {
     return o;
   }
 
+  // TODO(joeloyj): Figure out what tests go here.
+
   it("parser and codegen integration", () => {
-    debug(codegen(debug(ir.fromJson(debug(parse(`
-      // Destructuring
+    debug(codegen(debug(parse(`
       import { x, y } from "./Foo";
       import x from "./bar";
       import { x } from "./Foo";
 
       alert("!");
-    `))))));
+    `))));
   });
 
-  it("parser kitchen sink test", () => {
-    debug(codegen(debug(ir.fromJson(debug(parse(`
-      import Ff2_oo as Y from "./Foo";
-
-      // Destructuring + Aliasing
-      import { x as y, o } from "./Foo";
-
-      // Just load module, don't import anything.
-      import "./Foo";
+  it("parser and codegen kitchen sink test", () => {
+    debug(codegen(debug(parse(`
+      import { Ff2_oo as Y } from "./Foo";
 
       function Foo () {
         var a = "apple";
@@ -73,6 +68,6 @@ describe("Alloy", () => {
 
       console.log(Bar, foo, Test);
       console.log(Foo());
-    `))))));
+    `))));
   });
 });
