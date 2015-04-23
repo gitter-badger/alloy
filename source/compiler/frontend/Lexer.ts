@@ -1,16 +1,11 @@
 import Token from "./Token";
 
-/*
-
-Lexer.ts
-
-Created by Chris Prucha
-© 2015 Notion Labs, Inc
-
-Generate a list of tokens.
-
-*/
-
+/**
+ * Interface for lexer which generates a list of tokens.
+ *
+ * @author Chris Prucha (chris@makenotion.com)
+ * @author Joel Ong (joelo@google.com)
+ */
 interface Lexer {
 	generateTokens(code: string): Token[];
 }

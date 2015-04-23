@@ -1,16 +1,11 @@
 import { Element } from "../intermediate/ir";
 
-/*
-
-parser.ts
-
-Created by Chris Prucha
-© 2015 Notion Labs, Inc
-
-Generate an ir from a list of tokens.
-
-*/
-
+/**
+ * Interface for parser which generates IR from a list of tokens.
+ *
+ * @author Chris Prucha (chris@makenotion.com)
+ * @author Joel Ong (joelo@google.com)
+ */
 interface Parser {
 	parse(code: string): Element[];
 }

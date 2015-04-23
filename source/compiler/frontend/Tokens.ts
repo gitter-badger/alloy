@@ -1,16 +1,11 @@
-/*
-
-Tokens.ts
-
-Created by Chris Prucha
-© 2015 Notion Labs, Inc
-
-Interface for declarative token matching.
-
-*/
-
-// TODO(Chris): add reserved names
+/**
+ * Interface for declarative token matching.
+ *
+ * @author Chris Prucha (chris@makenotion.com)
+ * @author Joel Ong (joelo@google.com)
+ */
 interface Tokens {
+  // TODO(Chris): add reserved names
 	constants              : string[];
 	operators              : string[];
 	comment_delimiters     : string[];

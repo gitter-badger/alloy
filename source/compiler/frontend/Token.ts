@@ -1,14 +1,9 @@
-/*
-
-Token.ts
-
-Created by Chris Prucha
-© 2015 Notion Labs, Inc
-
-Interface for a token.
-
-*/
-
+/**
+ * Interface for a token.
+ *
+ * @author Chris Prucha (chris@makenotion.com)
+ * @author Joel Ong (joelo@google.com)
+ */
 interface Token {
 	type  : string;
 	value : string;
