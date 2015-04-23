@@ -12,6 +12,7 @@ import Tokens from "../../Tokens";
 
 // BUG(icetraxx,joeloyj): Handle escaped string delimiters in strings.
 // BUG(icetraxx,joeloyj): Handle line breaks in template strings.
+// BUG(icetraxx,joeloyj): Preserve all elements including string delimiters and semicolons.
 
 export default class JSLexer implements Lexer {
 
@@ -68,7 +69,9 @@ export default class JSLexer implements Lexer {
 
 						// Slice off the delimiter
 						let useToken = partialToken.slice(0, partialToken.length - 1);
+						let delimiter = partialToken.slice(useToken.length);
 						outputTokens.push(this.createToken("unknown", useToken));
+						outputTokens.push(this.createToken("delimiter", delimiter));
 						inUnknown = false;
 						inName    = false;
 					} else {

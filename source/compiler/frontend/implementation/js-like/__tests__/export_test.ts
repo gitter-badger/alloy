@@ -23,19 +23,35 @@ describe("JS-like parser", () => {
       (statement: string, properties: Object, isReExport?: boolean) => {
     let actual = parseStatement(statement);
     let toDeclaration = key => new ir.Declaration(key, properties[key]);
-    let declarations = R.map(toDeclaration, R.keys(properties));
+    let declarations = properties === undefined
+        ? undefined
+        : R.map(toDeclaration, R.keys(properties));
     let mod = isReExport
         ? new ir.Module(URI, ir.ModuleType.URI)
         : undefined;
     statement = R.replace("/export /g", "", statement);
     statement = R.replace("/default /g", `var ${DEFAULT_VAR} = `, statement);
-    let exected = new ir.ExportElement(declarations, statement, mod);
+    let exected = new ir.ExportElement(declarations, mod);
     expect(actual).toEqual(exected);
   }
 
   it("parses exported 'var' declarations", () => {
     assert(`export var a;`, { a: "a" });
     assert(`export var a = 123;`, { a: "a" });
+    assert(`export var a = 123, b = "foo";`, { a: "a", b: "b" });
+    assert(`export var a = 123, b = (() => { (x) => { var y = [[[], [], []]]; return (x * x); }}), c = "foo";`,
+        { a: "a", b: "b", c: "c" });
+    assert(`export var a = 123, b = (function(x, y) { return function() { ((z) => { [ v => z ] }) }}, "foo"), c = "bar";`,
+        { a: "a", b: "b", c: "c" });
+
+    // Variants without spaces and semicolons in different places.
+    assert(`export var a=123`, { a: "a" });
+    assert(`export var a=123;`, { a: "a" });
+    assert(`export var a=123,b="foo"`, { a: "a", b: "b" });
+    assert(`export var a=123,b=(()=>{(x)=>{var y=[[[],[],[]]];return(x*x);}}),c="foo"`,
+        { a: "a", b: "b", c: "c" });
+    assert(`export var a=123,b=(function(x,y){return function(){((z)=>{[v=>z];})}},"foo"),c="bar"`,
+        { a: "a", b: "b", c: "c" });
   });
 
   it("parses exported 'let' declarations", () => {
@@ -63,6 +79,14 @@ describe("JS-like parser", () => {
 
   it("parses exported default expressions", () => {
     assert(`export default 123;`, { "default": DEFAULT_VAR });
+    assert(`export default a = b = c;`, { "default": DEFAULT_VAR });
+    assert(`export default a = b <<= c;`, { "default": DEFAULT_VAR });
+    assert(`export default a || b && c;`, { "default": DEFAULT_VAR });
+    assert(`export default a ? b : c;`, { "default": DEFAULT_VAR });
+    assert(`export default x => x;`, { "default": DEFAULT_VAR })
+    assert(`export default () => {};`, { "default": DEFAULT_VAR })
+    assert(`export default (x) => { return x + x; };`, { "default": DEFAULT_VAR })
+    assert(`export default a ? b = c += d = () => { e => e } : c || d;`, { "default": DEFAULT_VAR });
   });
 
   it("parses exported default functions", () => {
@@ -76,6 +100,7 @@ describe("JS-like parser", () => {
   });
 
   it("parses exported lists", () => {
+    assert(`export {};`, {});
     assert(`export { x };`, { x: "x" });
     assert(`export { x, };`, { x: "x" });
     assert(`export { x, y };`, { x: "x", y: "y" });
@@ -95,10 +120,11 @@ describe("JS-like parser", () => {
   });
 
   it("parses re-exported namespaces from other modules", () => {
-    assert(`export * from "${URI}";`, {}, true /* isReExport */);
+    assert(`export * from "${URI}";`, undefined, true /* isReExport */);
   });
 
   it("parses re-exported names from other modules", () => {
+    assert(`export {} from "${URI}";`, {}, true);
     assert(`export { x } from "${URI}";`, { x: "x" }, true /* isReExport */);
     assert(`export { x, } from "${URI}";`, { x: "x" }, true);
     assert(`export { x, y } from "${URI}";`, { x: "x", y: "y" }, true);
@@ -139,8 +165,14 @@ describe("JS-like parser", () => {
     expect(() => parse(`export function(x) { return x; };`)).toThrow();
   });
 
+  it("fails when parsing exported unnamed generator that is not default", () => {
+    expect(() => parse(`export function*(x) { return x; };`)).toThrow();
+  });
+
   it("fails when parsing exported unnamed class that is not default", () => {
     expect(() => parse(`export class {};`)).toThrow();
+    expect(() => parse(`export class implements Foo {};`)).toThrow();
+    expect(() => parse(`export class extends Foo {};`)).toThrow();
   });
 
   it("fails when parsing re-exported namespaces with renaming", () => {

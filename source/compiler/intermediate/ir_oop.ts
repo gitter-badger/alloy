@@ -37,12 +37,12 @@ export class ImportElement implements Element {
  */
 export class ExportElement implements Element {
   constructor(
-      // Declarations, could be empty if this is a namespace re-export
+      // Declarations, can be undefined if this is a namespace re-export
       // from another module.
       public declarations: Declaration[],
       // Parsed text of the export statement, with export syntax removed
       // and the default export, if any, assigned to a unique identifier.
-      public text: string,
+      // public text: string,
       // Module spec, only applicable for re-exports.
       public reExportModule?: Module) {}
 }
@@ -139,7 +139,7 @@ export let fromJson = (json: jsonIR.ir|Error): Element[] => {
         reExportModule = new Module(elem.module["uri"], ModuleType.URI);
       }
 
-      return new ExportElement(declarations, elem.text, reExportModule);
+      return new ExportElement(declarations, /*elem.text,*/ reExportModule);
 
     } else if (jsonElem.type === "unparsed") {
       return new UnparsedElement((<jsonIR.unparsed>jsonElem).text);

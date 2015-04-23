@@ -53,10 +53,12 @@ export const TOKENS: Tokens = {
 		"*",
 		"{",
 		"}",
-		","
+		",",
+		"[",
+		"]"
 	],
 	"comment_delimiters": ["//"],
-	"token_delimiters" : [" ", "	", ";", "\n"],
+	"token_delimiters" : [" ", "	", ";", "\n", ","],
 	"string_delimiters": [
 		"`",
 		"'",

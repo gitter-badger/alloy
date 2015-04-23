@@ -57,6 +57,7 @@ describe("JS-like parser", () => {
 
   it("parses default binding imports", () => {
     assert(`import x from "${URI}";`, { x: "default" });
+    assert(`import*as x from"${URI}"`, { x: undefined });
   });
 
   it("parses imports with default binding followed by namespace import", () => {
