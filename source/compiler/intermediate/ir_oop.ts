@@ -1,4 +1,3 @@
-import * as jsonIR from "./ir";
 import { ramda as R } from "../../../vendor/npm";
 
 /**
@@ -94,59 +93,4 @@ export class Declaration {
       //     a module namespace import, where exported properties are made
       //     available as properties of an object with the alias above.
       public property?: string) {}
-}
-
-// TODO(joeloyj): Remove this after frontend code is refactored.
-/**
- * Converts from a JSON-compatible Object representation of IR to
- * the canonical form as described in this module.
- */
-export let fromJson = (json: jsonIR.ir|Error): Element[] => {
-  if (json instanceof Error) {
-    throw json;
-  }
-  let adapter = (jsonElem: jsonIR.IRElement): Element => {
-    if (jsonElem.type === "import_declaration") {
-      let elem = <jsonIR.import_declaration> jsonElem;
-
-      // Convert module spec.
-      if (elem.module["type"] !== "uri") {
-        throw new Error("Encountered unknown type of import.");
-      }
-      let importModule = new Module(elem.module["uri"], ModuleType.URI);
-
-      // Pull out import declarations.
-      let aliasToDeclaration = (alias: string) => {
-        let property = elem.declarations[alias]["property"];
-        return new Declaration(alias, property);
-      };
-      let importDeclarations: Declaration[] =
-          R.map(aliasToDeclaration, R.keys(elem.declarations));
-
-      return new ImportElement(importModule, importDeclarations);
-
-    } else if (jsonElem.type === "export_declaration") {
-      let elem = <jsonIR.export_declaration>jsonElem;
-      let declarations =
-          R.map(key => elem.declarations[key], R.keys(elem.declarations));
-
-      // Convert module spec.
-      let reExportModule;
-      if (R.has("module", elem)) {
-        if (elem.module["type"] !== "uri") {
-          throw new Error("Encountered unknown type of re-export.");
-        }
-        reExportModule = new Module(elem.module["uri"], ModuleType.URI);
-      }
-
-      return new ExportElement(declarations, /*elem.text,*/ reExportModule);
-
-    } else if (jsonElem.type === "unparsed") {
-      return new UnparsedElement((<jsonIR.unparsed>jsonElem).text);
-
-    } else {
-      throw new Error("Encountered unknown element.");
-    }
-  };
-  return R.map(adapter, json);
 }
