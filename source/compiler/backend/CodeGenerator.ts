@@ -1,4 +1,4 @@
-import * as ir from "../intermediate/ir_oop";
+import { Element } from "../intermediate/ir";
 
 /**
  * Interface for generating code from IR (intermediate representation).
@@ -11,5 +11,5 @@ export interface CodeGenerator {
   /**
    * Generates code from IR.
    */
-  generate(intermediate: Array<ir.Element>): string;
+  generate(intermediate: Array<Element>): string;
 }

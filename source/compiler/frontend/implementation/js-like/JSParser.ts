@@ -1,4 +1,4 @@
-import { Declaration, Element, ExportElement, ImportElement, Module, ModuleType } from "../../../intermediate/ir_oop";
+import { Declaration, Element, ExportElement, ImportElement, Module, ModuleType } from "../../../intermediate/ir";
 import { arrify, chalk, ramda as R } from "../../../../../vendor/npm";
 import Lexer  from "./JSLexer";
 import Parser from "../../Parser";

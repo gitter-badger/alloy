@@ -1,8 +1,7 @@
 import { CodeGenerator } from "../CodeGenerator";
+import { Element } from "../../intermediate/ir";
 import { ramda as R } from "../../../../vendor/npm";
-import * as ir from "../../intermediate/ir_oop";
-
-type IRElement = ir.Element;
+import * as ir from "../../intermediate/ir";
 
 /**
  * Code generator backed by Alloy's module system.
@@ -14,7 +13,7 @@ export default class AlloyCodeGenerator implements CodeGenerator {
   /**
    * Generates code from IR using Alloy's module system.
    */
-  public generate(intermediate: ir.Element[]): string {
+  public generate(intermediate: Element[]): string {
     let processIR: (string, IRElement) => string = (acc, elem) => {
       return acc + AlloyCodeGenerator.generateFromElement(elem);
     }

@@ -37,7 +37,6 @@
         "./source/compiler/frontend/implementation/js-like/__tests__/import_test.ts",
         "./source/compiler/frontend/implementation/js-like/match_es6_name.ts",
         "./source/compiler/intermediate/ir.ts",
-        "./source/compiler/intermediate/ir_oop.ts",
         "./source/config/Config.ts",
         "./source/config/FileConfig.ts",
         "./source/config/Properties.ts",

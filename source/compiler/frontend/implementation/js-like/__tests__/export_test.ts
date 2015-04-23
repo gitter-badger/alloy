@@ -1,5 +1,5 @@
 import { ramda as R } from "../../../../../../vendor/npm";
-import * as ir from "../../../../intermediate/ir_oop";
+import * as ir from "../../../../intermediate/ir";
 import Parser from "../JSParser";
 
 /**
