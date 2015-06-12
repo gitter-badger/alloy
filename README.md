@@ -1,4 +1,6 @@
 # Alloy
+
+[![Join the chat at https://gitter.im/makenotion/alloy](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/makenotion/alloy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Get the power of scripting back with ES6 modules, instant delta builds, sensible defaults, and no build scripts. Alloy is the anti-build system.
 
 ## Alloy's Principles
